@@ -431,25 +431,12 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:28px 0}
 
       <li class="step">
         <div class="step-content">
-          <h4>Instala Node.js (si no lo tienes)</h4>
-          <p>Claude Code necesita Node.js para funcionar. Para verificar si ya lo tienes, escribe esto en la terminal y presiona Enter:</p>
-          <div class="term">
-            <div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="term-title">Terminal</span></div>
-            <pre><span class="pr">$</span> node --version</pre>
-          </div>
-          <p>Si ves algo como <code>v20.x.x</code>, ya lo tienes instalado — pasa al paso 3. Si dice "command not found", ve a <strong>nodejs.org</strong>, descarga el instalador LTS (el botón verde grande) y ejecútalo.</p>
-        </div>
-      </li>
-
-      <li class="step">
-        <div class="step-content">
           <h4>Instala Claude Code</h4>
           <p>Copia y pega este comando en la terminal, exactamente como está, y presiona Enter:</p>
           <div class="term">
             <div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="term-title">Terminal</span></div>
-            <pre><span class="pr">$</span> npm install -g @anthropic-ai/claude-code
+            <pre><span class="pr">$</span> curl -fsSL https://claude.ai/install.sh | bash
 
-<span class="out">added 47 packages in 8s</span>
 <span class="ok">✓ Claude Code instalado correctamente</span></pre>
           </div>
           <p>El proceso toma 10-30 segundos. Verás texto desfilando — es normal. Cuando vuelva a aparecer el cursor (<code>$</code>), terminó.</p>
@@ -550,12 +537,12 @@ octubre-noviembre 2024. Duración promedio: 37 minutos.</span></pre>
       <p class="ex-p">Este ejercicio toma menos de 10 minutos. Sigue exactamente estos pasos:</p>
       <ul>
         <li>Abre la Terminal (⌘ + Espacio → escribe "Terminal")</li>
-        <li>Pega: <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">npm install -g @anthropic-ai/claude-code</code></li>
+        <li>Pega: <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">curl -fsSL https://claude.ai/install.sh | bash</code></li>
         <li>Navega a tu carpeta de proyecto: <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">cd ~/Documents/[tu-carpeta]</code></li>
         <li>Escribe <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">claude</code> e inicia sesión</li>
         <li>Primera instrucción: <em style="color:rgba(255,255,255,.7)">"¿Qué archivos hay en esta carpeta?"</em></li>
       </ul>
-      <p class="ex-p" style="margin-top:8px">Si algo falla, escríbele a alguien del equipo técnico — el 90% de los problemas son de Node.js no instalado.</p>
+      <p class="ex-p" style="margin-top:8px">Si algo falla, escríbele a alguien del equipo técnico.</p>
       <button class="try-btn" onclick="document.getElementById('checklist').scrollIntoView({behavior:'smooth'})">✅ Ver checklist completo →</button>
     </div>
   </section>
@@ -580,8 +567,7 @@ octubre-noviembre 2024. Duración promedio: 37 minutos.</span></pre>
 
     <ul style="list-style:none;padding:0;margin:0" id="checklist-list">
       <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Abrir la Terminal en Mac por primera vez</div><div class="ci-sub">⌘ + Espacio → escribe "Terminal" → Enter</div><span class="ci-tag">→ Sección 2: Setup</span></div></li>
-      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Verificar que Node.js está instalado</div><div class="ci-sub">Escribe: node --version — debe mostrar v18 o superior</div><span class="ci-tag">→ Sección 2: Setup</span></div></li>
-      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Instalar Claude Code</div><div class="ci-sub">npm install -g @anthropic-ai/claude-code</div><span class="ci-tag">→ Sección 2: Setup</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Instalar Claude Code</div><div class="ci-sub">curl -fsSL https://claude.ai/install.sh | bash</div><span class="ci-tag">→ Sección 2: Setup</span></div></li>
       <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Iniciar sesión con tu cuenta claude.ai</div><div class="ci-sub">Escribe: claude — el navegador abrirá para autenticarte</div><span class="ci-tag">→ Sección 2: Setup</span></div></li>
       <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Crear la carpeta de tu primer proyecto</div><div class="ci-sub">mkdir ~/Documents/mi-primer-proyecto-claude</div><span class="ci-tag">→ Sección 5: Tu primer proyecto</span></div></li>
       <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Crear las subcarpetas Data/, Analysis/, Delivery/</div><div class="ci-sub">Dentro de tu carpeta de proyecto, crea cada subcarpeta</div><span class="ci-tag">→ Sección 5: Tu primer proyecto</span></div></li>
@@ -1207,7 +1193,7 @@ de funcionalidad que excluyen al hablante como usuario válido".</span>
     </div>
 
     <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">Skills disponibles en el sistema</h3>
-    <div class="prose"><p>Estos skills ya están instalados y listos para usar:</p></div>
+    <div class="prose"><p>Estos skills están disponibles para instalar en tu proyecto — se descargan y configuran con un comando:</p></div>
 
     <div class="card-grid">
       <div class="card"><h4>🔍 /assumption-extraction</h4><p>Extrae los supuestos implícitos de un documento de brief o PRD.</p></div>
@@ -1477,28 +1463,11 @@ Subagentes completados. Sintetizando...</span>
 
     <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">Automatización semanal</h3>
 
-    <div class="prose">
-      <p>Una vez que tienes los skills y la estructura de proyecto, puedes automatizar partes del análisis semanal. Ejemplo para un proyecto de investigación continua:</p>
-    </div>
-
-    <div class="code-wrap">
-      <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">Flujo semanal automatizado (bash script)</span></div>
-      <pre><span class="c">#!/bin/bash
-# semanal.sh — ejecutar cada lunes</span>
-
-<span class="c"># 1. Actualizar proyecto desde GitHub</span>
-git pull origin main
-
-<span class="c"># 2. Ejecutar análisis de nuevas transcripciones</span>
-<span class="k">for</span> <span class="s">archivo</span> <span class="k">in</span> Data/nuevas/*.txt; <span class="k">do</span>
-  claude <span class="s">"</span>/extract-signals $archivo<span class="s">"</span>
-<span class="k">done</span>
-
-<span class="c"># 3. Síntesis semanal</span>
-claude <span class="s">"/opportunity-finder Genera un resumen semanal
-de las señales más relevantes encontradas esta semana"</span>
-
-<span class="ok">echo "✓ Análisis semanal completado"</span></pre>
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <p>Corre <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">/opportunity-finder</code> o <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">/extract-signals</code> manualmente desde Claude Code, o usa <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">claude --dangerously-skip-permissions</code> para sesiones sin interrupciones (usa con cuidado — consume más tokens).</p>
+      </div>
     </div>
 
     <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">MCPs — conecta Claude con tus herramientas</h3>
@@ -1760,7 +1729,7 @@ Esto sugiere que una estrategia nacional única no servirá.</span></pre>
   <!-- FOOTER -->
   <footer class="footer">
     <p style="color:rgba(255,255,255,.6);font-size:13px;margin-bottom:8px">🤖 <strong style="color:rgba(255,255,255,.8)">Claude Code — Guía Victoria Lab</strong></p>
-    <p>Construida con datos reales del proyecto Whoop Screen Exploration Q4 2025 (usado como caso de práctica) · Actualizada abril 2025</p>
+    <p>Construida con datos reales del proyecto Whoop Screen Exploration Q4 2025 (usado como caso de práctica) · Actualizada abril 2026</p>
     <p style="margin-top:8px">Para preguntas o sugerencias, abre un issue en el repositorio del equipo.</p>
   </footer>
 
