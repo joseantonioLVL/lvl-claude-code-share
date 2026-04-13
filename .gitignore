@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Datos sensibles / raw data (nunca subir a repos públicos)
+Data/
+*.csv
+*.xlsx
+
+# Outputs intermedios (opcional — comenta si quieres versionar análisis)
+# Analysis/
+
+# Credenciales y configuración local
+.env
+.env.local
+settings.local.json
+.claude/settings.local.json
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Editores
+.vscode/settings.json
+*.swp
+*.swo

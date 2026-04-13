@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code — Guía Victoria Lab</title>
+<style>
+:root {
+  --bg: #f8fafc;
+  --sidebar-bg: #0f172a;
+  --sidebar-text: #cbd5e1;
+  --card-bg: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --green: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --code-bg: #1e293b;
+  --sidebar-w: 268px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);height:100vh;position:fixed;top:0;left:0;overflow-y:auto;z-index:200;display:flex;flex-direction:column;transition:transform .25s ease}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+.sb-logo{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo h1{color:#fff;font-size:15px;font-weight:800;letter-spacing:-.3px}
+.sb-logo p{color:rgba(255,255,255,.4);font-size:11.5px;margin-top:3px}
+.sb-nav{padding:10px 0 24px}
+.sb-section{padding:14px 20px 4px;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.25);font-weight:700}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 20px;color:rgba(255,255,255,.55);text-decoration:none;font-size:13px;transition:all .15s;border-left:3px solid transparent;cursor:pointer;line-height:1.3}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff;border-left-color:rgba(59,130,246,.4)}
+.nav-item.active{background:rgba(59,130,246,.12);color:#93c5fd;border-left-color:#3b82f6}
+.nav-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh}
+.mobile-header{display:none;position:sticky;top:0;background:var(--sidebar-bg);padding:12px 20px;z-index:199;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.mobile-header h1{color:#fff;font-size:14px;font-weight:700}
+.hamburger{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:4px;line-height:1}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}
+.overlay.open{display:block}
+
+/* SECTIONS */
+.section{padding:60px 64px;border-bottom:1px solid var(--border);max-width:920px}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue);margin-bottom:8px}
+.section-title{font-size:30px;font-weight:800;line-height:1.2;letter-spacing:-.5px;margin-bottom:10px}
+.section-sub{font-size:16px;color:var(--muted);line-height:1.6;margin-bottom:32px}
+.section-header-row{display:flex;align-items:flex-start;gap:16px;margin-bottom:28px}
+.section-big-icon{font-size:40px;line-height:1;flex-shrink:0;margin-top:2px}
+
+/* LEARN BOX */
+.learn-box{background:linear-gradient(135deg,#eff6ff,#f5f3ff);border:1px solid #c7d7fe;border-radius:12px;padding:14px 18px;margin-bottom:28px;display:flex;gap:10px;align-items:flex-start}
+.learn-box-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+.learn-box p{font-size:13.5px;color:#1e40af;line-height:1.6}
+.learn-box strong{font-weight:700;color:#1d4ed8}
+
+/* PROSE */
+.prose p{font-size:15px;line-height:1.78;color:var(--text);margin-bottom:14px}
+.prose h3{font-size:19px;font-weight:700;margin:28px 0 10px;color:var(--text)}
+.prose h4{font-size:15px;font-weight:700;margin:18px 0 7px}
+.prose ul,.prose ol{padding-left:22px;margin-bottom:14px}
+.prose li{font-size:15px;line-height:1.7;margin-bottom:5px}
+.prose strong{font-weight:700}
+
+/* CARDS */
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:14px}
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+.card h4{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.card ul{padding-left:16px}
+.card li{font-size:13.5px;line-height:1.6;margin-bottom:4px;color:var(--muted)}
+.card p{font-size:13.5px;line-height:1.6;color:var(--muted)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin-bottom:24px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead th{padding:13px 18px;text-align:left;font-weight:700;font-size:12.5px;letter-spacing:.2px}
+thead th:first-child{background:#f1f5f9;color:var(--muted)}
+thead th:nth-child(2){background:#eff6ff;color:#1d4ed8}
+thead th:nth-child(3){background:#f5f3ff;color:#6d28d9}
+tbody td{padding:11px 18px;border-top:1px solid var(--border);vertical-align:top;line-height:1.55}
+tbody td:first-child{font-weight:600;background:#f8fafc;color:var(--muted);font-size:13px}
+
+/* CODE */
+.code-wrap{background:#0f172a;border-radius:10px;overflow:hidden;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.code-head{background:#020617;padding:8px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.dots{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f56}.dy{background:#ffbd2e}.dg{background:#27c93f}
+.fname{font-size:11.5px;color:rgba(255,255,255,.35);font-family:'SF Mono','Fira Code',monospace;margin-left:4px}
+.code-wrap pre{padding:18px 20px;font-family:'SF Mono','Fira Code','Cascadia Code',monospace;font-size:12.5px;line-height:1.75;color:#e2e8f0;overflow-x:auto;white-space:pre}
+.c{color:#475569}.s{color:#86efac}.k{color:#93c5fd}.n{color:#fca5a5}.h{color:#fde68a}.p{color:#94a3b8}.cm{color:#4ade80}
+
+/* TERMINAL */
+.term{background:#020617;border-radius:10px;overflow:hidden;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.term-head{background:#0f172a;padding:8px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.term-title{font-size:11.5px;color:rgba(255,255,255,.35)}
+.term pre{padding:18px 20px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;line-height:1.9;color:#e2e8f0;overflow-x:auto;white-space:pre}
+.pr{color:#4ade80}.out{color:#94a3b8}.ok{color:#4ade80}.err{color:#f87171}.inf{color:#60a5fa}.bold{color:#fff;font-weight:700}
+
+/* CALLOUTS */
+.callout{border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;gap:11px;align-items:flex-start}
+.callout-icon{font-size:17px;flex-shrink:0;margin-top:1px}
+.callout-body{flex:1}
+.callout-body strong{display:block;font-size:12px;font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+.callout-body p,.callout-body li{font-size:13.5px;line-height:1.6}
+.callout-body ul{padding-left:18px;margin-top:6px}
+.tip{background:#eff6ff;border:1px solid #bfdbfe}.tip strong,.tip p,.tip li{color:#1e40af}
+.warn{background:#fffbeb;border:1px solid #fde68a}.warn strong,.warn p,.warn li{color:#78350f}
+.ok{background:#f0fdf4;border:1px solid #bbf7d0}.ok strong,.ok p,.ok li{color:#14532d}
+.danger{background:#fef2f2;border:1px solid #fecaca}.danger strong,.danger p,.danger li{color:#7f1d1d}
+
+/* QUOTES */
+.quote{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--purple);border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:14px}
+.quote blockquote{font-size:14px;line-height:1.75;color:#334155;font-style:italic;margin-bottom:7px}
+.quote cite{font-size:12px;color:var(--muted);font-style:normal;display:flex;align-items:center;gap:5px}
+.quote cite::before{content:'—'}
+.quote-green{border-left-color:var(--green)}
+.quote-blue{border-left-color:var(--blue)}
+.quote-amber{border-left-color:var(--amber)}
+
+/* ERROR CARDS */
+.err-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.err-head{padding:15px 20px;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;transition:background .15s}
+.err-head:hover{background:#f8fafc}
+.err-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.err-title{flex:1}
+.err-title h4{font-size:15px;font-weight:700}
+.err-title p{font-size:12.5px;color:var(--muted);margin-top:2px}
+.err-chev{font-size:16px;color:var(--muted);transition:transform .2s}
+.err-chev.open{transform:rotate(90deg)}
+.err-body{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .2s}
+.err-body.open{max-height:1400px;padding:0 20px 22px}
+
+/* STEPS */
+.steps{list-style:none;padding:0;margin-bottom:24px;counter-reset:sc}
+.step{counter-increment:sc;display:flex;gap:16px;margin-bottom:22px;position:relative}
+.step::before{content:counter(sc);width:34px;height:34px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;position:relative;z-index:1}
+.step::after{content:'';position:absolute;left:16px;top:34px;bottom:-22px;width:2px;background:#e2e8f0}
+.step:last-child::after{display:none}
+.step-content{flex:1;padding-top:5px}
+.step-content h4{font-size:15px;font-weight:700;margin-bottom:6px}
+.step-content p{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:8px}
+
+/* FILE TREE */
+.ftree{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:14px 18px;font-family:'SF Mono','Fira Code',monospace;font-size:12.5px;line-height:2;margin-bottom:14px}
+.ft-folder{color:#3b82f6;font-weight:600}
+.ft-file{color:#334155}
+.ft-md{color:#8b5cf6}
+.ft-csv{color:#10b981}
+.ft-comment{color:#94a3b8;font-style:italic;font-family:inherit}
+
+/* SIGNAL CARDS */
+.sig-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:18px}
+.sig-head{display:flex;align-items:center;gap:13px;margin-bottom:14px}
+.sig-icon{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.sig-head h3{font-size:17px;font-weight:700}
+.sig-head .sig-sub{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* TAGS */
+.tag{display:inline-block;padding:3px 10px;border-radius:100px;font-size:12px;font-weight:600;margin-right:5px;margin-bottom:5px}
+.tb{background:#dbeafe;color:#1d4ed8}
+.tp{background:#ede9fe;color:#6d28d9}
+.tg{background:#dcfce7;color:#166534}
+.ta{background:#fef3c7;color:#92400e}
+.tr{background:#fee2e2;color:#991b1b}
+
+/* DIVIDER */
+hr.divider{border:none;border-top:1px solid var(--border);margin:28px 0}
+
+/* WORKFLOW */
+.wf-nodes{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.wf-node{background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.wf-arr{color:var(--muted);font-size:16px;flex-shrink:0}
+
+/* SKILL CARD */
+.skill{background:#0f172a;border-radius:12px;overflow:hidden;margin-bottom:18px;border:1px solid rgba(255,255,255,.08)}
+.skill-head{padding:14px 18px;background:rgba(255,255,255,.04);display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.06)}
+.skill-name{font-size:13.5px;font-weight:700;color:#4ade80;font-family:'SF Mono','Fira Code',monospace}
+.skill-desc{font-size:12.5px;color:rgba(255,255,255,.45);margin-top:2px}
+.skill pre{padding:18px 20px;font-family:'SF Mono','Fira Code',monospace;font-size:12px;line-height:1.85;color:#cbd5e1;overflow-x:auto;white-space:pre}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+
+/* MCP GRID */
+.mcp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:13px;margin-bottom:22px}
+.mcp-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.mcp-card .mi{font-size:28px;margin-bottom:8px}
+.mcp-card h4{font-size:13.5px;font-weight:700;margin-bottom:5px}
+.mcp-card p{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;font-size:12.5px;font-weight:600;margin-right:7px;margin-bottom:7px}
+.bb{background:#dbeafe;color:#1d4ed8}.bp{background:#ede9fe;color:#6d28d9}.bg{background:#dcfce7;color:#166534}
+
+/* FOOTER */
+.footer{padding:36px 64px;background:var(--sidebar-bg);color:rgba(255,255,255,.4);font-size:12.5px;line-height:1.7}
+.footer a{color:rgba(255,255,255,.6);text-decoration:none}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .mobile-header{display:flex}
+  .main{margin-left:0}
+  .section{padding:36px 20px}
+  .card-grid,.two-col{grid-template-columns:1fr}
+  .section-title{font-size:23px}
+  .footer{padding:28px 20px}
+  thead th,tbody td{padding:9px 12px}
+}
+/* EXERCISE BOX */
+.exercise{background:linear-gradient(135deg,#0f172a,#1e1b4b);border-radius:14px;padding:22px 24px;margin-top:32px;border:1px solid rgba(99,102,241,.25)}
+.exercise-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#818cf8;font-weight:700;margin-bottom:8px}
+.exercise h4{font-size:17px;font-weight:700;color:#fff;margin-bottom:10px}
+.exercise .ex-p{font-size:13.5px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:6px}
+.exercise ul{padding-left:18px;margin:8px 0 4px}
+.exercise li{font-size:13.5px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:4px}
+.try-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;margin-top:14px;transition:opacity .15s;text-decoration:none}
+.try-btn:hover{opacity:.85}
+/* CHECKLIST */
+.ci{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:10px;margin-bottom:8px;cursor:pointer;user-select:none;background:var(--card-bg);border:1px solid var(--border);transition:all .15s;list-style:none}
+.ci:hover{border-color:#c7d2fe}
+.ci.done{background:#f0fdf4;border-color:#bbf7d0}
+.ci.done .ci-title{color:var(--muted);text-decoration:line-through}
+.ci-box{width:22px;height:22px;border-radius:6px;border:2px solid #cbd5e1;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px}
+.ci.done .ci-box{background:#10b981;border-color:#10b981}
+.ci-ck{color:#fff;font-size:12px;display:none}
+.ci.done .ci-ck{display:block}
+.ci-content{flex:1}
+.ci-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4}
+.ci-sub{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.5}
+.ci-tag{font-size:11px;color:var(--blue);font-weight:600;margin-top:3px;display:block}
+.progress-wrap{background:#f1f5f9;border-radius:10px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.pbar-outer{flex:1;background:#e2e8f0;border-radius:100px;height:8px;overflow:hidden}
+.pbar-inner{height:100%;background:linear-gradient(90deg,#3b82f6,#10b981);border-radius:100px;transition:width .4s ease}
+.progress-label{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap}
+/* LVL NOTE */
+.lvl-note{background:linear-gradient(135deg,#fff7ed,#fffbeb);border:1px solid #fed7aa;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+.lvl-note-i{font-size:16px;flex-shrink:0;margin-top:1px}
+.lvl-note p{font-size:13px;color:#92400e;line-height:1.6}
+.lvl-note strong{color:#78350f}
+</style>
+</head>
+<body>
+
+<!-- OVERLAY MOBILE -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <h1>Claude Code</h1>
+    <p>Guía Victoria Lab · 2025</p>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Fundamentos</div>
+    <a class="nav-item active" href="#intro" onclick="closeSidebar()"><span class="nav-icon">🤖</span>¿Qué es Claude Code?</a>
+    <a class="nav-item" href="#setup" onclick="closeSidebar()"><span class="nav-icon">⚡</span>Setup en 10 minutos</a>
+
+    <div class="sb-section">Análisis con IA</div>
+    <a class="nav-item" href="#errores" onclick="closeSidebar()"><span class="nav-icon">🚨</span>Los 5 errores del análisis</a>
+    <a class="nav-item" href="#senales" onclick="closeSidebar()"><span class="nav-icon">🔍</span>4 señales ocultas</a>
+
+    <div class="sb-section">Tu flujo de trabajo</div>
+    <a class="nav-item" href="#proyecto" onclick="closeSidebar()"><span class="nav-icon">📁</span>Tu primer proyecto</a>
+    <a class="nav-item" href="#skills" onclick="closeSidebar()"><span class="nav-icon">⚙️</span>Skills — automatiza tu método</a>
+    <a class="nav-item" href="#workflows" onclick="closeSidebar()"><span class="nav-icon">🔀</span>Workflows avanzados</a>
+
+    <div class="sb-section">Equipo</div>
+    <a class="nav-item" href="#equipo" onclick="closeSidebar()"><span class="nav-icon">👥</span>Para el equipo</a>
+    <a class="nav-item" href="#victoria" onclick="closeSidebar()"><span class="nav-icon">🎯</span>Para Victoria Lab</a>
+
+    <div class="sb-section">Empezar hoy</div>
+    <a class="nav-item" href="#checklist" onclick="closeSidebar()"><span class="nav-icon">✅</span>Checklist primer día</a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- Mobile header -->
+  <div class="mobile-header">
+    <h1>🤖 Claude Code · Victoria Lab</h1>
+    <button class="hamburger" onclick="openSidebar()">☰</button>
+  </div>
+
+  <!-- =========================================================
+       SECTION 1: QUÉ ES CLAUDE CODE
+       ========================================================= -->
+  <section class="section" id="intro">
+    <div class="section-header-row">
+      <div class="section-big-icon">🤖</div>
+      <div>
+        <div class="section-label">Sección 1 — Fundamentos</div>
+        <h2 class="section-title">¿Qué es Claude Code y por qué te importa?</h2>
+        <p class="section-sub">La diferencia entre tener un asistente que conversa y uno que trabaja con tus archivos reales.</p>
+      </div>
+    </div>
+
+    <div class="learn-box">
+      <div class="learn-box-icon">🎯</div>
+      <p><strong>Lo que vas a aprender:</strong> En qué se diferencia Claude Code de claude.ai, cuándo usar cada uno, y por qué Claude Code es la herramienta que transforma el análisis cualitativo del equipo.</p>
+    </div>
+
+    <div class="prose">
+      <p>Cuando abres <strong>claude.ai</strong> en el navegador, estás chateando con una IA. Le pegas texto, le haces preguntas, te responde. Útil. Pero limitado: cada conversación empieza desde cero, no puede leer tus archivos locales, y si tu proyecto tiene 30 transcripciones, tendrías que pegarlas una por una.</p>
+
+      <p><strong>Claude Code</strong> es diferente. Es una herramienta que corre en tu computadora y tiene acceso directo a todos tus archivos. Puede leer 30 transcripciones de una vez, escribir análisis en carpetas específicas, recordar el contexto de tu proyecto a través del <code>CLAUDE.md</code>, y ejecutar flujos de trabajo completos con un solo comando.</p>
+
+      <p>Piénsalo así: Claude web es como un consultor que atiendes por videollamada. Claude Code es como un analista senior que se sienta al lado tuyo y trabaja directamente con tu computadora.</p>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:14px">Comparación directa</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>🌐 Claude Web (claude.ai)</th>
+            <th>💻 Claude Code (terminal)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Acceso a archivos</td><td>Solo lo que pegas en el chat</td><td>Todos los archivos de tu computadora</td></tr>
+          <tr><td>Memoria del proyecto</td><td>Solo dura la conversación</td><td>Permanente via CLAUDE.md</td></tr>
+          <tr><td>Volumen de datos</td><td>Pocas páginas a la vez</td><td>Cientos de archivos de una vez</td></tr>
+          <tr><td>Automatización</td><td>No</td><td>Skills y workflows repetibles</td></tr>
+          <tr><td>Consistencia</td><td>Varía según cómo explicas</td><td>Reglas fijas en .claude/rules/</td></tr>
+          <tr><td>Colaboración</td><td>Cada persona su propio chat</td><td>GitHub: todos comparten el mismo proyecto</td></tr>
+          <tr><td>Curva de aprendizaje</td><td>Inmediata</td><td>30 minutos de setup, luego fluye</td></tr>
+          <tr><td>Ideal para</td><td>Preguntas rápidas, drafts, ideas</td><td>Análisis de proyectos completos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>🌐 Usa Claude Web cuando...</h4>
+        <ul>
+          <li>Tienes una pregunta rápida</li>
+          <li>Quieres hacer brainstorming de ideas</li>
+          <li>Necesitas redactar un email o documento corto</li>
+          <li>Estás explorando un tema nuevo</li>
+          <li>No tienes acceso a la terminal</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>💻 Usa Claude Code cuando...</h4>
+        <ul>
+          <li>Tienes múltiples transcripciones que analizar</li>
+          <li>Quieres resultados consistentes y reproducibles</li>
+          <li>Necesitas que el análisis vaya a archivos específicos</li>
+          <li>Trabajas en equipo y quieren compartir el método</li>
+          <li>Quieres automatizar tareas repetitivas</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="callout-icon">💡</div>
+      <div class="callout-body">
+        <strong>Se complementan, no compiten</strong>
+        <p>El flujo ideal: usa Claude Web para estructurar tus preguntas de investigación, luego Claude Code para analizar las transcripciones, y de vuelta a Claude Web para pulir los entregables. Son herramientas distintas para momentos distintos.</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">¿Por qué esto importa para Victoria Lab?</h3>
+    <div class="prose">
+      <p>En un proyecto típico de investigación cualitativa, el cuello de botella no es tener las transcripciones — es procesarlas con rigor y consistencia. Sin Claude Code, el análisis depende de quién lo hace, de cuánto tiempo tiene, y de cuánto puede leer en una sentada.</p>
+      <p>Con Claude Code, el proyecto tiene <strong>memoria</strong> (CLAUDE.md), <strong>reglas</strong> (.claude/rules/), y <strong>flujos de trabajo repetibles</strong> (skills). Cuando onboardeas a alguien nuevo, no tienes que explicarle tu metodología — está en los archivos.</p>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-label">✏️ Ejercicio práctico · Sección 1</div>
+      <h4>Decide qué herramienta usar para tu próximo proyecto</h4>
+      <p class="ex-p">Piensa en el proyecto de investigación en el que estás trabajando ahora mismo (o el próximo que llega). Usa la tabla de arriba para decidir:</p>
+      <ul>
+        <li>¿Tienes múltiples archivos de transcripciones o encuestas? → <strong style="color:#4ade80">Claude Code</strong></li>
+        <li>¿Solo necesitas redactar, resumir, o hacer una consulta rápida? → <strong style="color:#93c5fd">Claude Web</strong></li>
+        <li>¿Quieres que el análisis sea reproducible y compartible con el equipo? → <strong style="color:#4ade80">Claude Code</strong></li>
+      </ul>
+      <p class="ex-p" style="margin-top:10px">Escríbelo en un papel o abre una nota: <em>"Para el proyecto [X] voy a usar [herramienta] porque [razón]."</em> Compartirlo con alguien del equipo sella el compromiso.</p>
+      <button class="try-btn" onclick="document.getElementById('setup').scrollIntoView({behavior:'smooth'})">⚡ Siguiente: instala Claude Code →</button>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SECTION 2: SETUP EN 10 MINUTOS
+       ========================================================= -->
+  <section class="section" id="setup">
+    <div class="section-header-row">
+      <div class="section-big-icon">⚡</div>
+      <div>
+        <div class="section-label">Sección 2 — Instalación</div>
+        <h2 class="section-title">Setup en 10 minutos</h2>
+        <p class="section-sub">Tutorial paso a paso para gente que nunca ha usado la terminal. Si puedes copiar y pegar, puedes hacer esto.</p>
+      </div>
+    </div>
+
+    <div class="learn-box">
+      <div class="learn-box-icon">🎯</div>
+      <p><strong>Lo que vas a aprender:</strong> Cómo abrir la terminal en Mac, instalar Claude Code, y lanzar tu primera sesión de análisis. No necesitas saber programar.</p>
+    </div>
+
+    <div class="callout warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <strong>Antes de empezar</strong>
+        <p>Necesitas: Mac con macOS 12 o superior · Conexión a internet · Una cuenta en claude.ai (gratis o de pago)</p>
+      </div>
+    </div>
+
+    <ul class="steps">
+      <li class="step">
+        <div class="step-content">
+          <h4>Abre la Terminal</h4>
+          <p>La Terminal es una ventana donde escribes comandos de texto. No es tan complicada como parece.</p>
+          <div class="callout tip"><div class="callout-icon">💡</div><div class="callout-body"><p>Presiona <strong>⌘ + Espacio</strong> para abrir Spotlight, escribe <strong>"Terminal"</strong> y presiona Enter. También la encuentras en Aplicaciones → Utilidades → Terminal.</p></div></div>
+          <p>Verás una ventana negra o blanca con un cursor parpadeante. Eso es la terminal. Está esperando que escribas algo.</p>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="step-content">
+          <h4>Instala Node.js (si no lo tienes)</h4>
+          <p>Claude Code necesita Node.js para funcionar. Para verificar si ya lo tienes, escribe esto en la terminal y presiona Enter:</p>
+          <div class="term">
+            <div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="term-title">Terminal</span></div>
+            <pre><span class="pr">$</span> node --version</pre>
+          </div>
+          <p>Si ves algo como <code>v20.x.x</code>, ya lo tienes instalado — pasa al paso 3. Si dice "command not found", ve a <strong>nodejs.org</strong>, descarga el instalador LTS (el botón verde grande) y ejecútalo.</p>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="step-content">
+          <h4>Instala Claude Code</h4>
+          <p>Copia y pega este comando en la terminal, exactamente como está, y presiona Enter:</p>
+          <div class="term">
+            <div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="term-title">Terminal</span></div>
+            <pre><span class="pr">$</span> npm install -g @anthropic-ai/claude-code
+
+<span class="out">added 47 packages in 8s</span>
+<span class="ok">✓ Claude Code instalado correctamente</span></pre>
+          </div>
+          <p>El proceso toma 10-30 segundos. Verás texto desfilando — es normal. Cuando vuelva a aparecer el cursor (<code>$</code>), terminó.</p>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="step-content">
+          <h4>Navega a tu carpeta de proyecto</h4>
+          <p>Antes de iniciar Claude, tienes que estar en la carpeta correcta. Por ejemplo, si tu proyecto está en Documentos:</p>
+          <div class="term">
+            <div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="term-title">Terminal</span></div>
+            <pre><span class="pr">$</span> cd ~/Documents/mi-proyecto-whoop
+
+<span class="out"># cd = "change directory" = cambiar de carpeta
+# ~/Documents = la carpeta Documentos de tu Mac
+# Tip: puedes arrastrar la carpeta desde Finder
+#      directamente a la terminal después de escribir "cd "</span></pre>
+          </div>
+          <div class="callout tip"><div class="callout-icon">💡</div><div class="callout-body"><p><strong>Atajo:</strong> Abre Finder, navega a tu carpeta de proyecto, y arrastra la carpeta directamente a la ventana de la terminal después de escribir <code>cd </code> (con espacio). Se auto-completa la ruta.</p></div></div>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="step-content">
+          <h4>Lanza Claude Code</h4>
+          <p>Escribe <code>claude</code> y presiona Enter:</p>
+          <div class="term">
+            <div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="term-title">Terminal</span></div>
+            <pre><span class="pr">$</span> claude
+
+<span class="inf">  ╔═══════════════════════════════╗
+  ║     Claude Code v1.x.x        ║
+  ╚═══════════════════════════════╝</span>
+
+<span class="out">¿Tienes una cuenta Anthropic? → Se abrirá el navegador
+para que inicies sesión.</span>
+
+<span class="ok">✓ Autenticado. Trabajando en: ~/Documents/mi-proyecto-whoop</span>
+<span class="bold">&gt;</span></pre>
+          </div>
+          <p>La primera vez, Claude Code abrirá tu navegador para iniciar sesión con tu cuenta de Anthropic/claude.ai. Después de eso, recuerda tu sesión.</p>
+        </div>
+      </li>
+
+      <li class="step">
+        <div class="step-content">
+          <h4>Tu primera instrucción</h4>
+          <p>Ya estás dentro. El cursor <code>&gt;</code> espera tu instrucción. Escribe algo y presiona Enter:</p>
+          <div class="term">
+            <div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="term-title">Claude Code — primera sesión</span></div>
+            <pre><span class="bold">&gt;</span> Lee los archivos en la carpeta Data/ y dime cuántas
+  transcripciones hay y de qué tratan.
+
+<span class="inf">Leyendo Data/...
+Encontré 5 transcripciones de entrevistas (P01-P08)
+y 1 archivo CSV con 150 respuestas de encuesta.</span>
+
+<span class="out">Las entrevistas son con usuarios que cancelaron su
+suscripción a Whoop. Todos fueron entrevistados entre
+octubre-noviembre 2024. Duración promedio: 37 minutos.</span></pre>
+          </div>
+          <div class="callout ok"><div class="callout-icon">✅</div><div class="callout-body"><strong>¡Listo!</strong><p>Ya tienes Claude Code funcionando. Desde aquí puedes pedirle que analice archivos, extraiga patrones, y genere reportes — todo en español.</p></div></div>
+        </div>
+      </li>
+    </ul>
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:14px">Comandos básicos que necesitas saber</h3>
+    <div class="card-grid">
+      <div class="card">
+        <h4>🔑 Atajos de teclado en Claude Code</h4>
+        <ul>
+          <li><strong>Enter</strong> — envía tu mensaje</li>
+          <li><strong>Shift+Enter</strong> — nueva línea sin enviar</li>
+          <li><strong>↑ flecha arriba</strong> — historial de comandos</li>
+          <li><strong>Ctrl+C</strong> — cancela lo que está haciendo</li>
+          <li><strong>/help</strong> — muestra la ayuda</li>
+          <li><strong>/compact</strong> — comprime el contexto (útil en sesiones largas)</li>
+          <li><strong>/exit</strong> — cierra Claude Code</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>📂 Comandos de terminal que usarás</h4>
+        <ul>
+          <li><code>cd [carpeta]</code> — navegar a una carpeta</li>
+          <li><code>ls</code> — listar archivos en la carpeta actual</li>
+          <li><code>pwd</code> — ver en qué carpeta estás</li>
+          <li><code>mkdir [nombre]</code> — crear carpeta</li>
+          <li><code>claude</code> — iniciar Claude Code</li>
+          <li><code>claude --resume</code> — retomar sesión anterior</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-label">✏️ Ejercicio práctico · Sección 2</div>
+      <h4>Instala Claude Code en tu Mac — ahora mismo</h4>
+      <p class="ex-p">Este ejercicio toma menos de 10 minutos. Sigue exactamente estos pasos:</p>
+      <ul>
+        <li>Abre la Terminal (⌘ + Espacio → escribe "Terminal")</li>
+        <li>Pega: <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">npm install -g @anthropic-ai/claude-code</code></li>
+        <li>Navega a tu carpeta de proyecto: <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">cd ~/Documents/[tu-carpeta]</code></li>
+        <li>Escribe <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">claude</code> e inicia sesión</li>
+        <li>Primera instrucción: <em style="color:rgba(255,255,255,.7)">"¿Qué archivos hay en esta carpeta?"</em></li>
+      </ul>
+      <p class="ex-p" style="margin-top:8px">Si algo falla, escríbele a alguien del equipo técnico — el 90% de los problemas son de Node.js no instalado.</p>
+      <button class="try-btn" onclick="document.getElementById('checklist').scrollIntoView({behavior:'smooth'})">✅ Ver checklist completo →</button>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       CHECKLIST: TU PRIMER DÍA
+       ========================================================= -->
+  <section class="section" id="checklist">
+    <div class="section-header-row">
+      <div class="section-big-icon">✅</div>
+      <div>
+        <div class="section-label">Checklist interactivo</div>
+        <h2 class="section-title">Tu primer día con Claude Code</h2>
+        <p class="section-sub">Marca cada tarea conforme la completes. Tu progreso se guarda en el navegador.</p>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="pbar-outer"><div class="pbar-inner" id="pbar"></div></div>
+      <span class="progress-label" id="plabel">0 / 14 completadas</span>
+    </div>
+
+    <ul style="list-style:none;padding:0;margin:0" id="checklist-list">
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Abrir la Terminal en Mac por primera vez</div><div class="ci-sub">⌘ + Espacio → escribe "Terminal" → Enter</div><span class="ci-tag">→ Sección 2: Setup</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Verificar que Node.js está instalado</div><div class="ci-sub">Escribe: node --version — debe mostrar v18 o superior</div><span class="ci-tag">→ Sección 2: Setup</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Instalar Claude Code</div><div class="ci-sub">npm install -g @anthropic-ai/claude-code</div><span class="ci-tag">→ Sección 2: Setup</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Iniciar sesión con tu cuenta claude.ai</div><div class="ci-sub">Escribe: claude — el navegador abrirá para autenticarte</div><span class="ci-tag">→ Sección 2: Setup</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Crear la carpeta de tu primer proyecto</div><div class="ci-sub">mkdir ~/Documents/mi-primer-proyecto-claude</div><span class="ci-tag">→ Sección 5: Tu primer proyecto</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Crear las subcarpetas Data/, Analysis/, Delivery/</div><div class="ci-sub">Dentro de tu carpeta de proyecto, crea cada subcarpeta</div><span class="ci-tag">→ Sección 5: Tu primer proyecto</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Escribir tu primer CLAUDE.md</div><div class="ci-sub">Crea un archivo con: nombre del proyecto, pregunta central, 2-3 reglas de análisis</div><span class="ci-tag">→ Sección 5: Tu primer proyecto</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Poner un archivo de datos reales en Data/</div><div class="ci-sub">Una transcripción, encuesta, o conversación de WhatsApp del equipo</div><span class="ci-tag">→ Sección 5: Tu primer proyecto</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Pedirle a Claude Code que lea y resuma tus datos</div><div class="ci-sub">"Lee los archivos en Data/ y dime qué contienen"</div><span class="ci-tag">→ Tu primera sesión</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Identificar los 5 errores del análisis en tu trabajo pasado</div><div class="ci-sub">Revisa un análisis anterior y busca: evidencia inventada, insights genéricos, etc.</div><span class="ci-tag">→ Sección 3: Los 5 errores</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Encontrar una señal oculta en una entrevista real</div><div class="ci-sub">Busca: workarounds, aceptación resignada, picos emocionales o contradicciones</div><span class="ci-tag">→ Sección 4: Señales ocultas</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Ejecutar tu primer skill disponible</div><div class="ci-sub">Prueba: /data-quality-audit en tu archivo CSV, o /assumption-extraction en tu brief</div><span class="ci-tag">→ Sección 6: Skills</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Compartir tu estructura de proyecto con alguien del equipo</div><div class="ci-sub">Sube a GitHub o comparte la carpeta para que otra persona pueda empezar</div><span class="ci-tag">→ Sección 8: Para el equipo</span></div></li>
+      <li class="ci" onclick="toggleCheck(this)"><div class="ci-box"><span class="ci-ck">✓</span></div><div class="ci-content"><div class="ci-title">Generar tu primer entregable con Claude Code</div><div class="ci-sub">"Genera un resumen de hallazgos para el cliente en formato markdown en Delivery/"</div><span class="ci-tag">→ Tu primer entregable real</span></div></li>
+    </ul>
+  </section>
+
+  <!-- =========================================================
+       SECTION 3: LOS 5 ERRORES
+       ========================================================= -->
+  <section class="section" id="errores">
+    <div class="section-header-row">
+      <div class="section-big-icon">🚨</div>
+      <div>
+        <div class="section-label">Sección 3 — Análisis con IA</div>
+        <h2 class="section-title">Los 5 errores del análisis con IA</h2>
+        <p class="section-sub">Por qué el análisis con IA puede ser peor que útil — y cómo evitarlo con evidencia real del proyecto Whoop.</p>
+      </div>
+    </div>
+
+    <div class="learn-box">
+      <div class="learn-box-icon">🎯</div>
+      <p><strong>Lo que vas a aprender:</strong> Los 5 patrones de falla más comunes cuando se usa IA para análisis cualitativo, con ejemplos concretos de cómo se ven — y cómo los detectas antes de que lleguen al cliente.</p>
+    </div>
+
+    <div class="lvl-note">
+      <div class="lvl-note-i">🏷️</div>
+      <p><strong>Nota sobre los ejemplos:</strong> En esta sección usamos datos del proyecto <strong>Whoop Screen Exploration Q4 2025</strong> (un estudio de investigación de usuarios de wearables fitness) como ejercicio de entrenamiento. Los mismos principios aplican exactamente a tus proyectos de LVL — conversaciones de bot de WhatsApp, encuestas de need assessment, o cualquier investigación cualitativa con clientes.</p>
+    </div>
+
+    <div class="prose">
+      <p>Usar IA para analizar investigación cualitativa es poderoso — pero solo si sabes qué puede salir mal. Estos cinco errores aparecen repetidamente en proyectos reales. Cada uno tiene una causa específica y una solución concreta.</p>
+    </div>
+
+    <!-- ERROR 1 -->
+    <div class="err-card">
+      <div class="err-head" onclick="toggleErr(this)">
+        <div class="err-num" style="background:#ef4444">1</div>
+        <div class="err-title">
+          <h4>Evidencia inventada (alucinación)</h4>
+          <p>La IA cita datos o frases que no existen en las transcripciones</p>
+        </div>
+        <span class="err-chev">›</span>
+      </div>
+      <div class="err-body">
+        <div class="callout danger"><div class="callout-icon">❌</div><div class="callout-body"><strong>Qué es</strong><p>La IA genera una "cita" que suena plausible pero no aparece en ninguno de tus archivos. O afirma que "el 70% de participantes mencionó X" cuando en realidad fue uno solo.</p></div></div>
+        <div class="callout warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Por qué pasa</strong><p>Los modelos de lenguaje completan patrones. Si le preguntas "¿qué dijo P03 sobre las notificaciones?", el modelo puede generar una respuesta coherente aunque P03 nunca mencionó notificaciones. La IA prefiere responder que admitir que no tiene evidencia.</p></div></div>
+
+        <p style="font-size:14px;line-height:1.7;margin-bottom:12px">Ejemplo real: al analizar las transcripciones Whoop, un análisis sin anclaje en datos podría generar:</p>
+
+        <div class="card" style="border-left:3px solid #ef4444;margin-bottom:12px">
+          <p style="font-size:13.5px;color:#7f1d1d;margin-bottom:4px"><strong>❌ Output con alucinación:</strong></p>
+          <p style="font-size:14px;line-height:1.7">"P03 mencionó explícitamente que las notificaciones push fueron la razón principal de su cancelación." — <em>Esta cita no existe en ninguna transcripción.</em></p>
+        </div>
+
+        <div class="card" style="border-left:3px solid #10b981">
+          <p style="font-size:13.5px;color:#166534;margin-bottom:4px"><strong>✅ Output con Claude Code anclado en datos:</strong></p>
+          <div class="quote" style="margin-top:8px;margin-bottom:0"><blockquote>"El problema no era los datos, era acceder a los datos. Si pudiera haber visto mi puntaje de recuperación con solo mirar la muñeca cada mañana, creo que seguiría siendo suscriptora."</blockquote><cite>P03, [00:06:18] — cita verificada en transcripción original</cite></div>
+        </div>
+
+        <div class="callout ok"><div class="callout-icon">✅</div><div class="callout-body"><strong>Cómo solucionarlo</strong><p>En tu CLAUDE.md, agrega la regla: <strong>"Toda afirmación sobre un participante debe ir acompañada de una cita textual y su timestamp. Si no hay cita, escribe explícitamente que no hay evidencia directa."</strong> Con Claude Code esto se puede hacer sistemáticamente en todas las transcripciones a la vez.</p></div></div>
+      </div>
+    </div>
+
+    <!-- ERROR 2 -->
+    <div class="err-card">
+      <div class="err-head" onclick="toggleErr(this)">
+        <div class="err-num" style="background:#f59e0b">2</div>
+        <div class="err-title">
+          <h4>Insights genéricos</h4>
+          <p>Hallazgos que aplican a cualquier producto y no dicen nada nuevo</p>
+        </div>
+        <span class="err-chev">›</span>
+      </div>
+      <div class="err-body">
+        <div class="callout danger"><div class="callout-icon">❌</div><div class="callout-body"><strong>Qué es</strong><p>El análisis produce observaciones que cualquier stakeholder ya sabe — o que podrían aplicar a cualquier producto de cualquier industria.</p></div></div>
+        <div class="callout warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Por qué pasa</strong><p>Cuando le pides a la IA "analiza estas entrevistas", sin criterio específico, el modelo busca patrones de superficie. Los patrones más fáciles de detectar son los más genéricos: "los usuarios quieren mejor UX", "la fricción reduce la retención".</p></div></div>
+
+        <div class="two-col" style="margin-top:12px">
+          <div class="card" style="border-left:3px solid #ef4444">
+            <h4 style="color:#991b1b;font-size:13px;margin-bottom:8px">❌ Insight genérico (inútil)</h4>
+            <p>"Los usuarios experimentan fricción al acceder a los datos de recuperación, lo que afecta negativamente su engagement con la aplicación."</p>
+          </div>
+          <div class="card" style="border-left:3px solid #10b981">
+            <h4 style="color:#166534;font-size:13px;margin-bottom:8px">✅ Insight específico (accionable)</h4>
+            <p>"Para usuarios con hijos pequeños, el proceso de 3 pasos para ver datos en la app es suficiente para romper el hábito de verificación matutina — la ventana de atención se cierra en 10-15 segundos antes de que empiecen las interrupciones del hogar."</p>
+          </div>
+        </div>
+
+        <div class="callout ok"><div class="callout-icon">✅</div><div class="callout-body"><strong>Cómo solucionarlo</strong><p>Define en tu CLAUDE.md la pregunta de investigación específica. En el proyecto Whoop era: <em>"¿Debe Whoop agregar una pantalla al wristband?"</em>. Cada insight debe responder directamente esa pregunta, citando el segmento de usuario, el contexto específico, y la implicación accionable.</p></div></div>
+      </div>
+    </div>
+
+    <!-- ERROR 3 -->
+    <div class="err-card">
+      <div class="err-head" onclick="toggleErr(this)">
+        <div class="err-num" style="background:#8b5cf6">3</div>
+        <div class="err-title">
+          <h4>Señal no accionable</h4>
+          <p>Datos que describen el problema pero no orientan la decisión</p>
+        </div>
+        <span class="err-chev">›</span>
+      </div>
+      <div class="err-body">
+        <div class="callout danger"><div class="callout-icon">❌</div><div class="callout-body"><strong>Qué es</strong><p>El análisis reporta una cantidad (porcentaje, frecuencia) pero no dice qué hacer con esa información. El stakeholder queda igual de perdido.</p></div></div>
+
+        <p style="font-size:14px;line-height:1.7;margin:12px 0">Ejemplo del proyecto Whoop. La encuesta de salida tenía este dato:</p>
+
+        <div class="card" style="border-left:3px solid #ef4444;margin-bottom:12px">
+          <p style="font-size:13.5px;color:#7f1d1d;margin-bottom:4px"><strong>❌ Señal no accionable:</strong></p>
+          <p style="font-size:14px;line-height:1.7">"31 de 150 usuarios churneados (21%) citaron la falta de pantalla como razón principal de cancelación." — <em>¿Y entonces? ¿Agregas pantalla o no?</em></p>
+        </div>
+
+        <p style="font-size:14px;line-height:1.7;margin-bottom:12px">Las entrevistas en profundidad revelan lo que la encuesta no puede ver:</p>
+
+        <div class="card" style="border-left:3px solid #10b981">
+          <p style="font-size:13.5px;color:#166534;margin-bottom:8px"><strong>✅ Señal accionable (del análisis cross-entrevistas):</strong></p>
+          <p style="font-size:14px;line-height:1.7;margin-bottom:8px">"El 21% que dijo 'quiero pantalla' incluye al menos 3 perfiles distintos con necesidades incompatibles: (a) padres ocupados que quieren un vistazo de recuperación en 2 segundos, (b) atletas de trail que necesitan GPS completo, (c) usuarios de fitness grupal que en realidad no pueden actuar sobre los datos independientemente del formato. Una sola pantalla no soluciona los tres casos."</p>
+        </div>
+
+        <div class="quote quote-amber"><blockquote>"Podría haber marcado 'quiero una pantalla' en la encuesta de salida. Pero ahora tengo un Apple Watch con pantalla y no cambia nada. El problema real era otro."</blockquote><cite>P08, usuario churneado — el dato de encuesta habría sido engañoso</cite></div>
+
+        <div class="callout ok"><div class="callout-icon">✅</div><div class="callout-body"><strong>Cómo solucionarlo</strong><p>Usa el skill <strong>/workflow-decisions</strong> para que el análisis esté anclado desde el inicio a una decisión específica. Cada hallazgo debe responder: ¿apoya o refuta la decisión propuesta? ¿Para qué segmento?</p></div></div>
+      </div>
+    </div>
+
+    <!-- ERROR 4 -->
+    <div class="err-card">
+      <div class="err-head" onclick="toggleErr(this)">
+        <div class="err-num" style="background:#3b82f6">4</div>
+        <div class="err-title">
+          <h4>Contradicciones no detectadas</h4>
+          <p>El análisis presenta hallazgos opuestos sin notar que se contradicen</p>
+        </div>
+        <span class="err-chev">›</span>
+      </div>
+      <div class="err-body">
+        <div class="callout danger"><div class="callout-icon">❌</div><div class="callout-body"><strong>Qué es</strong><p>Un hallazgo dice "los usuarios quieren pantalla" y otro dice "los usuarios prefieren el diseño minimalista sin pantalla" — ambos verdaderos para segmentos distintos, pero presentados como verdades universales que se contradicen.</p></div></div>
+        <div class="callout warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Por qué pasa</strong><p>La IA tiende a reportar lo que cada entrevista dice sin verificar si los hallazgos son consistentes entre sí. Sin una etapa de síntesis que compare explícitamente, las contradicciones pasan desapercibidas.</p></div></div>
+
+        <p style="font-size:14px;line-height:1.7;margin:12px 0">En el proyecto Whoop, esto fue exactamente lo que la síntesis de evidencia detectó:</p>
+
+        <div class="quote"><blockquote>"La queja de la pantalla enmascara problemas heterogéneos. P01 quería la funcionalidad de un reloj GPS. P03 quería acceso a datos sin fricción. P06 quería métricas de running en tiempo real. P07 quería interpretación de datos. P08 quería características sociales y gamificación. Los cinco podrían haber marcado 'quería una pantalla' en la encuesta de salida, pero significaban cosas completamente diferentes."</blockquote><cite>Fragmento real de evidence-synthesis.md — análisis Whoop Q4 2025</cite></div>
+
+        <div class="callout ok"><div class="callout-icon">✅</div><div class="callout-body"><strong>Cómo solucionarlo</strong><p>Usa <strong>/cross-source-triangulation</strong> y <strong>/assumption-validation</strong> después de analizar entrevistas individuales. Estos workflows fuerzan una comparación explícita entre fuentes y etiquetan cada hallazgo como "convergente" o "divergente".</p></div></div>
+      </div>
+    </div>
+
+    <!-- ERROR 5 -->
+    <div class="err-card">
+      <div class="err-head" onclick="toggleErr(this)">
+        <div class="err-num" style="background:#10b981">5</div>
+        <div class="err-title">
+          <h4>Aplanamiento de segmentos</h4>
+          <p>Agregar datos de perfiles distintos que se cancelan mutuamente</p>
+        </div>
+        <span class="err-chev">›</span>
+      </div>
+      <div class="err-body">
+        <div class="callout danger"><div class="callout-icon">❌</div><div class="callout-body"><strong>Qué es</strong><p>El análisis promedia respuestas de usuarios con necesidades opuestas. El resultado no representa a nadie — es un perfil ficticio que cancela las señales reales.</p></div></div>
+        <div class="callout warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Por qué pasa</strong><p>Por defecto, la IA trata todos los participantes como homogéneos a menos que se le instruya explícitamente lo contrario. En encuestas especialmente, el "promedio" puede esconder que la distribución es bimodal.</p></div></div>
+
+        <p style="font-size:14px;line-height:1.7;margin:12px 0">En Whoop, mezclar P01 (ultra runner que no quiere pantalla) con P03 (madre ocupada que sí la quiere desesperadamente) produce conclusiones sin sentido. La síntesis correcta fue:</p>
+
+        <div class="quote quote-blue"><blockquote>"La evidencia se divide claramente por segmento, haciendo que una respuesta agregada a '¿debemos agregar una pantalla?' sea engañosa. Para P03: sí, sin ambigüedad. Para P01: no. Para P07: no, y confirmado por experiencia propia con Apple Watch."</blockquote><cite>evidence-synthesis.md — Mapa de Evidencia por Decisión</cite></div>
+
+        <div class="callout ok"><div class="callout-icon">✅</div><div class="callout-body"><strong>Cómo solucionarlo</strong><p>Antes de analizar, define en tu CLAUDE.md los segmentos relevantes. Instrucción: <em>"Nunca agregues hallazgos entre segmentos sin justificarlo explícitamente. Si los datos divergen por segmento, repórtalos por separado."</em></p></div></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-label">✏️ Ejercicio práctico · Sección 3</div>
+      <h4>Detecta un error en un análisis pasado tuyo</h4>
+      <p class="ex-p">Abre el último análisis que entregaste a un cliente. Lee los hallazgos y busca:</p>
+      <ul>
+        <li>¿Hay afirmaciones sin cita directa del participante? → <strong style="color:#fca5a5">Error 1: evidencia inventada</strong></li>
+        <li>¿Algún hallazgo diría lo mismo para cualquier producto/cliente? → <strong style="color:#fde68a">Error 2: insight genérico</strong></li>
+        <li>¿Los porcentajes están sin segmentar? → <strong style="color:#c4b5fd">Error 5: aplanamiento</strong></li>
+      </ul>
+      <p class="ex-p" style="margin-top:8px">Escribe en Claude Code: <em style="color:rgba(255,255,255,.7)">"Lee este análisis [pega el texto] y dime si hay evidencia sin citar, insights genéricos, o hallazgos que mezclan segmentos distintos."</em></p>
+      <button class="try-btn" onclick="navigator.clipboard && navigator.clipboard.writeText('Lee este análisis y dime si hay: (1) afirmaciones sin cita directa del participante, (2) insights que aplican a cualquier producto, (3) hallazgos que mezclan segmentos distintos sin justificarlo. Sé específico.').then(()=>this.textContent='✓ Copiado al portapapeles')">📋 Copiar instrucción para Claude</button>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SECTION 4: 4 SEÑALES
+       ========================================================= -->
+  <section class="section" id="senales">
+    <div class="section-header-row">
+      <div class="section-big-icon">🔍</div>
+      <div>
+        <div class="section-label">Sección 4 — Análisis profundo</div>
+        <h2 class="section-title">4 señales que el análisis superficial pierde</h2>
+        <p class="section-sub">Los patrones más ricos de una entrevista no están en lo que el participante dice directamente — están en cómo lo dice.</p>
+      </div>
+    </div>
+
+    <div class="learn-box">
+      <div class="learn-box-icon">🎯</div>
+      <p><strong>Lo que vas a aprender:</strong> Cuatro tipos de señales de alto valor que solo emergen cuando el análisis va más allá de las respuestas literales. Con fragmentos reales de transcripciones de investigación.</p>
+    </div>
+
+    <div class="lvl-note">
+      <div class="lvl-note-i">🏷️</div>
+      <p><strong>Datos de ejemplo:</strong> Los fragmentos de esta sección vienen de entrevistas reales del proyecto Whoop (estudio sobre wearables fitness, usado aquí como caso de práctica). Aplica exactamente la misma lógica a tus entrevistas de clientes LVL: conversaciones del bot, sesiones de need assessment, o entrevistas de campo.</p>
+    </div>
+
+    <!-- SEÑAL 1: WORKAROUNDS -->
+    <div class="sig-card">
+      <div class="sig-head">
+        <div class="sig-icon" style="background:#eff6ff">🔧</div>
+        <div>
+          <h3>1. Workarounds — señales de fricción real</h3>
+          <div class="sig-sub">Lo que el usuario hace para compensar lo que el producto no hace</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <p><strong>Qué buscar:</strong> Cuando un participante describe pasos adicionales, soluciones temporales, o hábitos compensatorios que inventaron para que el producto "funcione" en su vida — ese es el workaround. Es evidencia directa de un dolor que el usuario ya asumió como parte del flujo.</p>
+        <p><strong>Por qué lo pierde el análisis superficial:</strong> El participante no lo llama "workaround" — lo describe como parte de su rutina normal. Solo cuando lo comparas con la intención del diseño se vuelve visible.</p>
+      </div>
+
+      <div class="quote"><blockquote>"Estaba intentando usar el celular en un brazalete para ver las métricas mientras corría. Pero con el sudor y el movimiento, era prácticamente imposible desbloquear la pantalla. Terminé memorizando mis zonas de frecuencia cardíaca antes de cada entrenamiento para no tener que mirar nada."</blockquote><cite>P06, corredor/ciclista — workaround que revela que el producto no era funcional para su deporte</cite></div>
+
+      <div class="quote quote-green"><blockquote>"Aprendí a revisar el app la noche anterior en lugar de la mañana. Si el lunes iba a ser un día difícil según Whoop, lo tenía presente desde el domingo. No era lo ideal, pero funcionaba."</blockquote><cite>P07, consultora con viajes frecuentes — workaround temporal que eventualmente no fue suficiente</cite></div>
+
+      <div class="callout tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Cómo detectarlo con Claude Code</strong><p>Instrucción: <em>"En cada transcripción, identifica momentos donde el participante describe haber creado un proceso adicional, hábito alternativo, o solución inventada para compensar una limitación del producto. Cita el fragmento y clasifica el workaround."</em></p></div></div>
+    </div>
+
+    <!-- SEÑAL 2: ACEPTACIÓN RESIGNADA -->
+    <div class="sig-card">
+      <div class="sig-head">
+        <div class="sig-icon" style="background:#fffbeb">😮‍💨</div>
+        <div>
+          <h3>2. Aceptación resignada — dolor normalizado</h3>
+          <div class="sig-sub">Cuando el usuario asumió que el problema es culpa suya, no del producto</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <p><strong>Qué buscar:</strong> Frases como "supongo que no soy el tipo de usuario para esto", "entiendo que no es para mí", "probablemente no lo usaba bien". El participante ha internalizado el fracaso como un defecto propio, no como un fallo del diseño.</p>
+        <p><strong>Por qué lo pierde el análisis superficial:</strong> El participante nunca lo presenta como queja — de hecho, puede incluso defender al producto. La señal está en lo que no dice: no exige mejora porque ya asumió que no va a mejorar.</p>
+      </div>
+
+      <div class="quote quote-amber"><blockquote>"Veía el puntaje amarillo y pensaba: quizás debería tomarlo con calma hoy. Pero ya me había inscrito en la clase de las 6am. Y en Orange Theory si cancelas con menos de ocho horas de anticipación te cobran igual. Entonces iba de todas formas."<br><br><em>[Más tarde en la entrevista:]</em> "Supongo que Whoop es más útil para personas que pueden controlar su propio entrenamiento. Yo no puedo — tengo un instructor."</blockquote><cite>P07 — aceptación resignada: el usuario no reconoció que el problema era un mismatch de diseño, lo internalizó como limitación propia</cite></div>
+
+      <div class="callout tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Cómo detectarlo con Claude Code</strong><p>Instrucción: <em>"Identifica frases donde el participante asume responsabilidad por una limitación del producto. Palabras clave: 'supongo que no soy', 'probablemente yo', 'quizás el problema es que', 'entiendo que no está diseñado para'. Cada una puede indicar una fricción que el usuario ya dejó de reportar como queja."</em></p></div></div>
+    </div>
+
+    <!-- SEÑAL 3: PICOS EMOCIONALES -->
+    <div class="sig-card">
+      <div class="sig-head">
+        <div class="sig-icon" style="background:#fef2f2">💥</div>
+        <div>
+          <h3>3. Picos emocionales — el momento que lo cristalizó</h3>
+          <div class="sig-sub">El episodio específico donde la frustración acumulada se hizo visible</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <p><strong>Qué buscar:</strong> Anécdotas narradas con detalle excepcionalmente vívido. Cuando un participante recuerda una fecha, una hora, una persona, un objeto específico — esa especificidad indica que el momento tuvo carga emocional. Es la historia que se cuentan a sí mismos para justificar su decisión.</p>
+        <p><strong>Por qué lo pierde el análisis superficial:</strong> El análisis temático agrupa estas historias bajo categorías como "fricción de acceso" y pierde la carga emocional que las hace significativas como evidencia.</p>
+      </div>
+
+      <div class="quote" style="border-left-color:#ef4444"><blockquote>"Había tenido un ride muy fuerte la noche anterior y quería ver mi recuperación y strain. Me desperté, agarré el celular, abrí el app. Y estaba sincronizando.<br><br>Mientras esperaba, mi hijo de siete años entró llorando porque su hermana le dijo que su nave Lego era estúpida. Y yo estaba ahí parado con el celular esperando un puntaje de recuperación mientras mi hijo lloraba por los Legos. Y pensé: esto es absurdo. Puse el celular, manejé la crisis Lego, y cuando todo terminó ya me había olvidado completamente de Whoop.<br><br>Ese fue el momento donde me di cuenta: esto no va a funcionar como está."</blockquote><cite>P03, Austin TX — pico emocional que cristalizó la decisión de cancelar. Este fragmento no sería visible en ninguna encuesta.</cite></div>
+
+      <div class="prose">
+        <p>Lo que hace poderoso este fragmento no es solo la fricción de acceso — es el <strong>arco emocional completo</strong>: esfuerzo deliberado → interrupción → momento de claridad → decisión. La síntesis del proyecto lo llamó "arco culpa-alivio": el producto se convirtió en una fuente de estrés, y cancelarlo trajo alivio.</p>
+      </div>
+
+      <div class="callout tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Cómo detectarlo con Claude Code</strong><p>Instrucción: <em>"Identifica el momento de mayor densidad narrativa en cada entrevista — donde el participante da más detalles específicos (lugar, hora, persona, objeto). Ese es probablemente el pico emocional. Extráelo con su timestamp y explica por qué fue decisivo."</em></p></div></div>
+    </div>
+
+    <!-- SEÑAL 4: CONTRADICCIONES DECIR-HACER -->
+    <div class="sig-card">
+      <div class="sig-head">
+        <div class="sig-icon" style="background:#f5f3ff">🎭</div>
+        <div>
+          <h3>4. Contradicciones decir-hacer</h3>
+          <div class="sig-sub">Cuando lo que el usuario dice que hace no coincide con lo que describe que hace</div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <p><strong>Qué buscar:</strong> El participante afirma una intención o comportamiento en abstracto ("yo siempre reviso mis métricas") y luego describe un comportamiento concreto que lo contradice ("esa mañana no tuve tiempo, y al día siguiente tampoco"). La brecha entre el yo-ideal y el yo-real es donde viven las necesidades más honestas.</p>
+      </div>
+
+      <div class="quote quote-purple"><blockquote>"Quería trackear todo esto correctamente. Trabajaba cinco o seis días a la semana, era el momento de hacerlo en serio."<br><br><em>[Más tarde:]</em> "Honestamente nunca entendí del todo los números. ¿El strain de 20.1 era bueno? No lo sé. Mi amigo lo decía como si fuera algo impresionante, entonces yo decía 'genial.' Pero no tenía idea."</blockquote><cite>P08, Miami — declaración de intención vs. comportamiento real. La encuesta registraría "quería mejorar el tracking de salud", pero la realidad era que nunca activó esa intención.</cite></div>
+
+      <div class="quote quote-blue"><blockquote>"Me enganché inmediatamente — checaba el app todo el tiempo. Aprendí cosas, fue genial."<br><br><em>[Cinco minutos después:]</em> "Después de un par de meses, internalizé lo que aprendí sobre el sueño. Ya no necesitaba seguir midiendo. Sabía lo que tenía que hacer."</blockquote><cite>P01, Courchevel — no es contradicción negativa: es la señal de que el producto completó su trabajo. Pero implica un techo natural de engagement.</cite></div>
+
+      <div class="callout tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Cómo detectarlo con Claude Code</strong><p>Instrucción: <em>"Para cada participante, compara las afirmaciones de comportamiento declarativo ('yo siempre hago X', 'mi hábito es Y') con los episodios concretos que describe. Cuando hay discrepancia entre lo abstracto y lo concreto, márcalo como contradicción decir-hacer y extrae ambas citas."</em></p></div></div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-label">✏️ Ejercicio práctico · Sección 4</div>
+      <h4>Encuentra una señal oculta en tu próxima entrevista</h4>
+      <p class="ex-p">En tu próxima sesión de análisis, antes de empezar, guarda estas 4 instrucciones en un archivo:</p>
+      <ul>
+        <li><strong style="color:#93c5fd">Workaround:</strong> "¿Describió el participante un proceso alternativo que inventó para compensar algo?"</li>
+        <li><strong style="color:#fde68a">Aceptación resignada:</strong> "¿Hay frases donde culpa sus propias limitaciones en lugar del producto?"</li>
+        <li><strong style="color:#fca5a5">Pico emocional:</strong> "¿Cuál es el momento de mayor detalle narrativo? (hora, lugar, persona, objeto específico)"</li>
+        <li><strong style="color:#c4b5fd">Decir vs hacer:</strong> "¿Qué dice que hace vs qué describe que en realidad hace?"</li>
+      </ul>
+      <p class="ex-p" style="margin-top:8px">Corre estas 4 preguntas en una transcripción real tuya y compara los resultados con tu análisis anterior del mismo dato.</p>
+      <button class="try-btn" onclick="navigator.clipboard && navigator.clipboard.writeText('Analiza esta transcripción y busca 4 señales:\n1. WORKAROUND: ¿Describió el participante un proceso alternativo que inventó para compensar algo?\n2. ACEPTACIÓN RESIGNADA: ¿Hay frases donde culpa sus propias limitaciones en lugar del producto?\n3. PICO EMOCIONAL: ¿Cuál es el momento de mayor detalle narrativo? (hora, lugar, persona, objeto específico)\n4. DECIR VS HACER: ¿Qué dice que hace vs qué describe que en realidad hace?\nPara cada señal encontrada: cita textual + por qué importa.').then(()=>this.textContent='✓ Copiado')">📋 Copiar las 4 instrucciones</button>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SECTION 5: TU PRIMER PROYECTO
+       ========================================================= -->
+  <section class="section" id="proyecto">
+    <div class="section-header-row">
+      <div class="section-big-icon">📁</div>
+      <div>
+        <div class="section-label">Sección 5 — Setup del proyecto</div>
+        <h2 class="section-title">Tu primer proyecto</h2>
+        <p class="section-sub">Estructura de carpetas, CLAUDE.md, reglas, y formatos óptimos. El setup que hace que todo lo demás funcione.</p>
+      </div>
+    </div>
+
+    <div class="learn-box">
+      <div class="learn-box-icon">🎯</div>
+      <p><strong>Lo que vas a aprender:</strong> Cómo organizar un proyecto de investigación cualitativa para que Claude Code funcione de manera consistente, reproducible, y compartible con el equipo.</p>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:14px">Estructura de carpetas recomendada</h3>
+
+    <div class="ftree">
+<span class="ft-folder">mi-proyecto-investigacion/</span>
+│
+├── <span class="ft-md">CLAUDE.md</span>          <span class="ft-comment">← memoria del proyecto (Claude lo lee automáticamente)</span>
+│
+├── <span class="ft-folder">.claude/</span>
+│   └── <span class="ft-folder">rules/</span>
+│       ├── <span class="ft-md">datos.md</span>      <span class="ft-comment">← cómo manejar los datos crudos</span>
+│       ├── <span class="ft-md">outputs.md</span>    <span class="ft-comment">← formato de análisis y entregables</span>
+│       └── <span class="ft-md">citas.md</span>      <span class="ft-comment">← reglas de citación y evidencia</span>
+│
+├── <span class="ft-folder">Data/</span>             <span class="ft-comment">← datos crudos originales (solo lectura)</span>
+│   ├── <span class="ft-file">transcripcion-P01.txt</span>
+│   ├── <span class="ft-file">transcripcion-P02.txt</span>
+│   ├── <span class="ft-csv">encuesta-salida.csv</span>
+│   └── <span class="ft-md">CLAUDE.md</span>         <span class="ft-comment">← "nunca modificar estos archivos"</span>
+│
+├── <span class="ft-folder">Analysis/</span>         <span class="ft-comment">← análisis generados (con timestamps)</span>
+│   ├── <span class="ft-md">2025-01-15-P01-signals.md</span>
+│   └── <span class="ft-md">2025-01-15-synthesis.md</span>
+│
+├── <span class="ft-folder">Context/</span>          <span class="ft-comment">← documentos de contexto del cliente</span>
+│   ├── <span class="ft-md">brief-proyecto.md</span>
+│   └── <span class="ft-md">prd.md</span>
+│
+├── <span class="ft-folder">Process/</span>          <span class="ft-comment">← documentación de metodología</span>
+│   └── <span class="ft-md">protocolo-codificacion.md</span>
+│
+└── <span class="ft-folder">Delivery/</span>         <span class="ft-comment">← entregables para el cliente</span>
+    └── <span class="ft-md">reporte-final.md</span>
+    </div>
+
+    <div class="callout warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Regla de oro: Data/ es sagrada</strong><p>Los archivos en Data/ son los originales. Nunca se modifican. Si necesitas limpiar datos, crea un archivo limpio en Analysis/. Esto garantiza reproducibilidad — siempre puedes volver a los datos crudos.</p></div></div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">El CLAUDE.md: memoria permanente del proyecto</h3>
+
+    <p style="font-size:14px;line-height:1.7;color:var(--muted);margin-bottom:14px">El <code>CLAUDE.md</code> es el archivo más importante. Claude lo lee automáticamente al inicio de cada sesión — es como el briefing que le das a un analista el primer día. Incluye: qué es el proyecto, qué pregunta estás respondiendo, y cómo quieres que trabaje.</p>
+
+    <div class="code-wrap">
+      <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">CLAUDE.md</span></div>
+      <pre><span class="c"># Proyecto: Research Whoop — Screen Exploration Q4 2025</span>
+
+<span class="h">## Contexto del proyecto</span>
+Analizamos entrevistas cualitativas con usuarios churneados de Whoop
+para responder una pregunta de decisión de producto:
+
+<span class="s">**Pregunta central:** ¿Debe Whoop agregar una pantalla al wristband?</span>
+
+El cliente necesita evidencia que apoye o refute esta decisión,
+segmentada por tipo de usuario.
+
+<span class="h">## Estructura de datos</span>
+- <span class="k">Data/</span>: 5 transcripciones (.txt) + 1 encuesta CSV (150 respuestas)
+- Todas las fuentes son en inglés — mantener citas en inglés con
+  traducción libre en paréntesis cuando sea necesario
+
+<span class="h">## Reglas de análisis</span>
+1. Toda afirmación sobre un participante DEBE ir con cita textual + timestamp
+2. Si no hay evidencia directa, escribir explícitamente "sin evidencia directa"
+3. Nunca agregar hallazgos entre segmentos sin justificación explícita
+4. Etiquetar cada hallazgo: [APOYA pantalla] / [REFUTA pantalla] / [COMPLEJO]
+5. Separar siempre: qué dice el participante vs qué sugiere el comportamiento
+
+<span class="h">## Segmentos definidos</span>
+- Atletas de resistencia (P01, P06): usan GPS watches, entrenan solos
+- Usuarios de fitness grupal (P07, P08): clases instructoradas, no controlan intensidad
+- Padres ocupados (P03): caos doméstico, ventanas de atención cortas
+
+<span class="h">## Formato de outputs</span>
+- Análisis individuales: /Analysis/YYYY-MM-DD-[codigo]-[tipo].md
+- Síntesis: /Analysis/YYYY-MM-DD-synthesis.md
+- Cada análisis empieza con: Participante | Segmento | Disposición | Veredicto</pre>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">Reglas en .claude/rules/</h3>
+
+    <p style="font-size:14px;line-height:1.7;color:var(--muted);margin-bottom:14px">Las reglas en <code>.claude/rules/</code> son instrucciones más específicas que se cargan según el contexto. A diferencia del CLAUDE.md, puedes tener múltiples archivos de reglas para distintos tipos de tareas.</p>
+
+    <div class="code-wrap">
+      <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">.claude/rules/citas.md</span></div>
+      <pre><span class="c"># Reglas de citación y evidencia</span>
+
+<span class="h">## Formato obligatorio de cita</span>
+<span class="k">"[texto exacto de la cita]" [código participante], [timestamp o línea]</span>
+
+Ejemplo correcto:
+<span class="s">"Si pudiera haber visto mi recuperación con solo mirar la muñeca,
+creo que seguiría siendo suscriptora." P03, [00:06:18]</span>
+
+<span class="h">## Lo que NUNCA debes hacer</span>
+- Parafrasear sin citar ("el participante expresó que...")
+- Generalizar sin base ("los usuarios sienten que...")
+- Usar adverbios de frecuencia sin conteo ("frecuentemente", "siempre")
+
+<span class="h">## Escala de fuerza de evidencia</span>
+- FUERTE: 3+ participantes con citas directas convergentes
+- MODERADA: 2 participantes O 1 con cita muy específica y vívida
+- DÉBIL: 1 participante sin cita directa o con cita ambigua
+- SIN EVIDENCIA: inferencia del analista sin base en datos</pre>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">Formatos óptimos de archivos</h3>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>📄 Markdown (.md) — para todo análisis</h4>
+        <ul>
+          <li>Claude lo lee perfecto, con estructura</li>
+          <li>Permite headers, listas, tablas, citas</li>
+          <li>Legible en GitHub, Notion, Obsidian</li>
+          <li>Versionable con git</li>
+          <li style="color:#991b1b">❌ Evita Word o Google Docs — Claude no los lee bien</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>📊 CSV — para datos cuantitativos</h4>
+        <ul>
+          <li>Separador punto y coma (;) recomendado</li>
+          <li>Primera fila: headers claros y cortos</li>
+          <li>Sin celdas combinadas ni colores</li>
+          <li>Claude puede leer y agregar directamente</li>
+          <li style="color:#991b1b">❌ Evita Excel con fórmulas o macros</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>📝 Texto plano (.txt) — para transcripciones</h4>
+        <ul>
+          <li>Ideal para transcripciones crudas largas</li>
+          <li>Incluye timestamps en formato [HH:MM:SS]</li>
+          <li>Separa participantes con líneas en blanco</li>
+          <li>Indica speaker: "Entrevistador:" / "P01:"</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>🖼️ Imágenes (.png/.jpg) — para contexto visual</h4>
+        <ul>
+          <li>Claude puede ver y describir imágenes</li>
+          <li>Útil para screenshots de apps, mapas de viaje</li>
+          <li>Incluir siempre nombre descriptivo del archivo</li>
+          <li>No usar para datos tabulares — usar CSV</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-label">✏️ Ejercicio práctico · Sección 5</div>
+      <h4>Crea la estructura de tu primer proyecto real en 5 minutos</h4>
+      <p class="ex-p">Abre la terminal y crea la estructura completa con estos comandos:</p>
+      <ul>
+        <li><code style="color:#4ade80;background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">mkdir -p ~/Documents/mi-proyecto/{Data,Analysis,Context,Process,Delivery,.claude/rules}</code></li>
+        <li>Crea el CLAUDE.md usando el template de esta sección como punto de partida</li>
+        <li>Mueve un archivo de datos real a <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">Data/</code></li>
+        <li>Inicia Claude Code desde esa carpeta y prueba: <em style="color:rgba(255,255,255,.7)">"Lee el CLAUDE.md y dime si te falta algún contexto del proyecto"</em></li>
+      </ul>
+      <button class="try-btn" onclick="navigator.clipboard && navigator.clipboard.writeText('mkdir -p ~/Documents/mi-proyecto/{Data,Analysis,Context,Process,Delivery,.claude/rules}').then(()=>this.textContent='✓ Copiado')">📋 Copiar comando mkdir</button>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SECTION 6: SKILLS
+       ========================================================= -->
+  <section class="section" id="skills">
+    <div class="section-header-row">
+      <div class="section-big-icon">⚙️</div>
+      <div>
+        <div class="section-label">Sección 6 — Automatización</div>
+        <h2 class="section-title">Skills — automatiza tu metodología</h2>
+        <p class="section-sub">Un skill es tu metodología convertida en un comando reutilizable. Lo que tardas 20 minutos en explicar, lo ejecutas en 3 segundos.</p>
+      </div>
+    </div>
+
+    <div class="learn-box">
+      <div class="learn-box-icon">🎯</div>
+      <p><strong>Lo que vas a aprender:</strong> Qué es un skill, cómo usarlo, cómo mejorarlo con el ciclo pressure-test → improver, y la diferencia entre commands, skills y subagentes.</p>
+    </div>
+
+    <div class="prose">
+      <p>Imagina que cada proyecto de investigación empieza igual: lees las transcripciones, buscas workarounds, buscas aceptación resignada, buscas picos emocionales, buscas contradicciones decir-hacer. Eso son 4 pasadas por cada transcripción, cada vez explicando desde cero qué buscar.</p>
+      <p>Un <strong>skill</strong> es esa explicación empaquetada como un comando. Escribes <code>/extract-signals</code> y Claude ejecuta todas las pasadas con la misma consistencia, siempre.</p>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:14px">Ejemplo: el skill /extract-signals</h3>
+
+    <div class="skill">
+      <div class="skill-head">
+        <div>
+          <div class="skill-name">/extract-signals</div>
+          <div class="skill-desc">Extrae las 4 señales de alto valor de una transcripción de entrevista</div>
+        </div>
+      </div>
+      <pre><span class="c"># Skill: extract-signals
+# Propósito: analizar una transcripción y extraer señales de alto valor</span>
+
+<span class="cm">Analiza el archivo de transcripción que se te indica y extrae:</span>
+
+<span class="h">## 1. Workarounds</span>
+Identifica momentos donde el participante describe haber inventado
+un proceso alternativo para compensar una limitación del producto.
+Formato: [timestamp] + cita + clasificación del workaround
+
+<span class="h">## 2. Aceptación resignada</span>
+Busca frases donde el usuario internaliza un fallo del producto
+como limitación propia. Palabras clave: "supongo que no soy",
+"probablemente yo", "entiendo que no está diseñado para mí".
+
+<span class="h">## 3. Pico emocional</span>
+Identifica el momento de mayor densidad narrativa — donde el
+participante da más detalles específicos (hora, lugar, persona,
+objeto). Ese es el episodio que cristalizó su decisión.
+
+<span class="h">## 4. Contradicciones decir-hacer</span>
+Compara afirmaciones declarativas ("yo siempre hago X") con
+episodios concretos. Extrae ambas citas cuando hay discrepancia.
+
+<span class="h">## Formato de output</span>
+Para cada señal encontrada:
+- SEÑAL: [tipo]
+- CITA: "[texto exacto]" [timestamp]
+- RELEVANCIA: [por qué importa para la pregunta de investigación]
+- FUERZA: FUERTE / MODERADA / DÉBIL</pre>
+    </div>
+
+    <div class="callout tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Cómo usar un skill</strong><p>En tu sesión de Claude Code, escribe: <code>/extract-signals Data/transcripcion-P03.txt</code>. El skill se ejecuta en ese archivo y produce un análisis estructurado en <code>Analysis/</code>.</p></div></div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">El ciclo de mejora: pressure-test → skill-improver</h3>
+
+    <div class="prose">
+      <p>Los skills mejoran con el uso. El proceso es:</p>
+    </div>
+
+    <div class="wf-nodes">
+      <div class="wf-node">🚀 Ejecutas el skill</div>
+      <span class="wf-arr">→</span>
+      <div class="wf-node">🔍 Revisas el output</div>
+      <span class="wf-arr">→</span>
+      <div class="wf-node">🧪 Pressure test: ¿qué falló?</div>
+      <span class="wf-arr">→</span>
+      <div class="wf-node">⚙️ /insights-skill-improver</div>
+      <span class="wf-arr">→</span>
+      <div class="wf-node">✨ Skill mejorado</div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">Claude Code — mejorando un skill</span></div>
+      <pre><span class="bold">&gt;</span> Ejecuté /extract-signals en P07 y no detectó la aceptación
+  resignada. El participante dijo "supongo que Whoop es más para
+  personas que controlan su entrenamiento" — eso es claramente
+  aceptación resignada pero el skill lo ignoró.
+
+  Usa /insights-skill-improver para mejorar la detección.
+
+<span class="inf">Revisando el skill extract-signals...
+El problema: el skill busca frases explícitas como "no soy el tipo
+de usuario". La frase de P07 es una atribución de funcionalidad
+("es para personas que X") que implícitamente excluye al usuario.
+
+Mejora propuesta: agregar patrón de detección para "atribuciones
+de funcionalidad que excluyen al hablante como usuario válido".</span>
+
+<span class="ok">✓ Skill actualizado en .claude/skills/extract-signals.md</span></pre>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">Commands vs Skills vs Subagentes — ¿cuándo usar cada uno?</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>🔵 Commands (/comando)</th>
+            <th>🟣 Skills (/skill personalizado)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Qué es</td><td>Comandos integrados de Claude Code</td><td>Tus flujos de trabajo empaquetados</td></tr>
+          <tr><td>Quién lo crea</td><td>Anthropic (ya vienen)</td><td>Tu equipo (los defines en .claude/)</td></tr>
+          <tr><td>Ejemplos</td><td>/compact, /help, /clear</td><td>/extract-signals, /data-quality-audit</td></tr>
+          <tr><td>Cuándo usar</td><td>Gestión de la sesión de Claude</td><td>Análisis repetible de investigación</td></tr>
+          <tr><td>Personalizable</td><td>No</td><td>Sí — y mejoran con el uso</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="border-left:4px solid var(--purple)">
+      <h4>🤖 Subagentes — para tareas paralelas</h4>
+      <p>Un subagente es una instancia separada de Claude que trabaja en una tarea específica mientras tú continúas con otra. Ideal cuando necesitas analizar 10 transcripciones a la vez — un subagente por transcripción, todos en paralelo. Se cubren en detalle en la sección de Workflows Avanzados.</p>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">Skills disponibles en el sistema</h3>
+    <div class="prose"><p>Estos skills ya están instalados y listos para usar:</p></div>
+
+    <div class="card-grid">
+      <div class="card"><h4>🔍 /assumption-extraction</h4><p>Extrae los supuestos implícitos de un documento de brief o PRD.</p></div>
+      <div class="card"><h4>✅ /assumption-verification</h4><p>Verifica si los supuestos tienen respaldo en los datos.</p></div>
+      <div class="card"><h4>🎯 /decision-decomposition</h4><p>Descompone una decisión de producto en sub-preguntas investigables.</p></div>
+      <div class="card"><h4>📊 /data-quality-audit</h4><p>Audita la calidad de un dataset CSV antes de analizarlo.</p></div>
+      <div class="card"><h4>🧪 /test-plan</h4><p>Genera un plan de validación para un conjunto de hallazgos.</p></div>
+      <div class="card"><h4>🔀 /cross-source-triangulation</h4><p>Compara hallazgos de múltiples fuentes y detecta convergencias/divergencias.</p></div>
+      <div class="card"><h4>🛡️ /assumption-validation</h4><p>Pipeline completo de validación de supuestos con evidencia.</p></div>
+      <div class="card"><h4>🔀 /workflow-decisions</h4><p>Orquesta 4 skills en secuencia para análisis de decisión de producto.</p></div>
+      <div class="card"><h4>✨ /insights-skill-improver</h4><p>Mejora un skill existente basándose en feedback de ejecución.</p></div>
+      <div class="card"><h4>💡 /opportunity-finder</h4><p>Lanza subagentes paralelos para identificar oportunidades en múltiples fuentes.</p></div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-label">✏️ Ejercicio práctico · Sección 6</div>
+      <h4>Ejecuta tu primer skill en datos reales</h4>
+      <p class="ex-p">Elige uno de los skills disponibles según lo que tengas a mano:</p>
+      <ul>
+        <li>Si tienes un brief de cliente → prueba <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">/assumption-extraction</code></li>
+        <li>Si tienes un CSV de encuesta → prueba <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">/data-quality-audit</code></li>
+        <li>Si tienes transcripciones → prueba <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">/assumption-verification</code></li>
+      </ul>
+      <p class="ex-p" style="margin-top:8px">Después de ejecutarlo, responde: ¿el output fue útil? ¿Qué mejorarías? Eso es exactamente lo que alimenta el ciclo de mejora con <code style="color:#4ade80;background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">/insights-skill-improver</code>.</p>
+      <button class="try-btn" onclick="document.getElementById('workflows').scrollIntoView({behavior:'smooth'})">⚡ Siguiente: workflows avanzados →</button>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SECTION 7: WORKFLOWS AVANZADOS
+       ========================================================= -->
+  <section class="section" id="workflows">
+    <div class="section-header-row">
+      <div class="section-big-icon">🔀</div>
+      <div>
+        <div class="section-label">Sección 7 — Avanzado</div>
+        <h2 class="section-title">Workflows avanzados</h2>
+        <p class="section-sub">Subagentes paralelos, orquestadores de decisión, validación de supuestos, y cómo manejar sesiones largas sin perder contexto.</p>
+      </div>
+    </div>
+
+    <div class="learn-box">
+      <div class="learn-box-icon">🎯</div>
+      <p><strong>Lo que vas a aprender:</strong> Los workflows más potentes de Claude Code — opportunity finder con subagentes paralelos, el orquestador workflow-decisions, el método separar-comparar-verificar, y cómo manejar el "context rot" en sesiones largas.</p>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:14px">1. Opportunity Finder — subagentes paralelos</h3>
+
+    <div class="prose">
+      <p>El <strong>/opportunity-finder</strong> lanza múltiples subagentes en paralelo, cada uno analizando una fuente de datos distinta, y luego sintetiza todos los resultados. En lugar de procesar 5 transcripciones en secuencia (30 min), las procesa todas a la vez (~7 min).</p>
+    </div>
+
+    <div class="card" style="background:#f8fafc;margin-bottom:16px">
+      <h4 style="margin-bottom:12px">Cómo funciona el flujo</h4>
+      <div class="wf-nodes" style="margin-bottom:8px">
+        <div class="wf-node">📋 Tu instrucción</div>
+        <span class="wf-arr">→</span>
+        <div class="wf-node">🎯 Agente orquestador</div>
+        <span class="wf-arr">→</span>
+        <div class="wf-node">🤖 Subagente P01</div>
+      </div>
+      <div class="wf-nodes" style="margin-bottom:8px">
+        <div style="width:140px"></div>
+        <span class="wf-arr" style="visibility:hidden">→</span>
+        <div style="width:140px"></div>
+        <span class="wf-arr">+</span>
+        <div class="wf-node">🤖 Subagente P03</div>
+      </div>
+      <div class="wf-nodes">
+        <div style="width:140px"></div>
+        <span class="wf-arr" style="visibility:hidden">→</span>
+        <div style="width:140px"></div>
+        <span class="wf-arr">+</span>
+        <div class="wf-node">🤖 Subagente P06-P08</div>
+        <span class="wf-arr">→</span>
+        <div class="wf-node">📊 Síntesis final</div>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">Claude Code — ejecutando opportunity finder</span></div>
+      <pre><span class="bold">&gt;</span> /opportunity-finder
+  Analiza todas las transcripciones en Data/ en paralelo.
+  Pregunta: ¿Cuáles son las oportunidades de producto más
+  respaldadas por los datos para reducir el churn?
+
+<span class="inf">Lanzando 5 subagentes en paralelo...
+  → Subagente 1: analizando P01 (trail runner, Courchevel)
+  → Subagente 2: analizando P03 (madre ocupada, Austin)
+  → Subagente 3: analizando P06 (ciclista/corredor, Portland)
+  → Subagente 4: analizando P07 (consultora OTF, Charlotte)
+  → Subagente 5: analizando P08 (Barry's/tennis, Miami)
+
+Subagentes completados. Sintetizando...</span>
+
+<span class="ok">✓ Análisis completado. Output: Analysis/2025-01-15-opportunities.md</span>
+
+<span class="out">Top oportunidades identificadas:
+1. Reducción de fricción de acceso matutino (P03) — FUERTE
+2. Soporte para running/GPS (P06) — FUERTE para segmento atletas
+3. Interpretación de datos para usuarios de fitness grupal (P07)
+4. Onboarding que surface el widget de lock screen (P03) — MODERADA</span></pre>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:28px 0 14px">2. Workflow-Decisions — el orquestador de 4 skills</h3>
+
+    <div class="prose">
+      <p>El skill <strong>/workflow-decisions</strong> es un orquestador que encadena automáticamente 4 skills en la secuencia correcta para responder una pregunta de decisión de producto:</p>
+    </div>
+
+    <div class="wf-nodes" style="flex-wrap:wrap;gap:8px;margin-bottom:16px">
+      <div class="wf-node" style="background:#eff6ff;border-color:#bfdbfe">1️⃣ /decision-decomposition</div>
+      <span class="wf-arr">→</span>
+      <div class="wf-node" style="background:#f5f3ff;border-color:#ddd6fe">2️⃣ /assumption-extraction</div>
+      <span class="wf-arr">→</span>
+      <div class="wf-node" style="background:#f0fdf4;border-color:#bbf7d0">3️⃣ /cross-source-triangulation</div>
+      <span class="wf-arr">→</span>
+      <div class="wf-node" style="background:#fffbeb;border-color:#fde68a">4️⃣ /assumption-validation</div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card"><h4>1️⃣ Decision Decomposition</h4><p>Toma la pregunta de decisión y la descompone en sub-preguntas específicas que los datos pueden responder.</p></div>
+      <div class="card"><h4>2️⃣ Assumption Extraction</h4><p>Extrae los supuestos implícitos en la decisión. Ej: "asume que todos los usuarios que se quejaron de pantalla tienen la misma necesidad".</p></div>
+      <div class="card"><h4>3️⃣ Cross-Source Triangulation</h4><p>Compara las respuestas de entrevistas con los datos de encuesta, identificando convergencias y divergencias críticas.</p></div>
+      <div class="card"><h4>4️⃣ Assumption Validation</h4><p>Evalúa cada supuesto contra la evidencia disponible. Resultado: supuestos confirmados, refutados, o sin evidencia suficiente.</p></div>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:28px 0 14px">3. El método separar-comparar-verificar</h3>
+
+    <div class="prose">
+      <p>Para proyectos con múltiples fuentes de datos (entrevistas + encuesta + analytics), el método más robusto es:</p>
+    </div>
+
+    <ul class="steps" style="margin-bottom:24px">
+      <li class="step">
+        <div class="step-content">
+          <h4>Separar — analiza cada fuente aislada</h4>
+          <p>Primero analiza cada fuente sin mezclarlas. Esto previene que los datos cuantitativos contaminen la lectura cualitativa.</p>
+          <div class="term"><div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div></div><pre><span class="bold">&gt;</span> Analiza solo Data/encuesta-salida.csv.
+  Codifica los temas sin ver las entrevistas todavía.</pre></div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-content">
+          <h4>Comparar — identifica convergencias y divergencias</h4>
+          <p>Una vez que tienes análisis separados de cada fuente, compáralos explícitamente.</p>
+          <div class="term"><div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div></div><pre><span class="bold">&gt;</span> /cross-source-triangulation
+  Compara Analysis/encuesta-codificada.md con
+  Analysis/entrevistas-synthesis.md.
+  Identifica qué coincide y qué contradice.</pre></div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-content">
+          <h4>Verificar — explica las divergencias</h4>
+          <p>Las divergencias son las más interesantes. Cuando la encuesta dice una cosa y las entrevistas dicen otra, ahí está la señal más valiosa.</p>
+          <div class="quote" style="margin-top:8px"><blockquote>La encuesta reportó que el 21% se fue por "falta de pantalla". Las entrevistas revelaron que este número incluye perfiles con necesidades incompatibles. La divergencia no invalida la encuesta — la profundiza.</blockquote><cite>Fragmento de methodology note — proyecto Whoop</cite></div>
+        </div>
+      </li>
+    </ul>
+
+    <h3 style="font-size:17px;font-weight:700;margin:28px 0 14px">4. Context rot — y cómo manejarlo</h3>
+
+    <div class="prose">
+      <p>En sesiones largas de análisis, el "context rot" es el deterioro gradual de la calidad de las respuestas conforme la sesión de Claude Code se llena de información. El modelo empieza a confundir datos de distintas entrevistas, repite puntos, o pierde el hilo de la pregunta de investigación.</p>
+    </div>
+
+    <div class="callout warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Señales de context rot</strong><p>• Claude empieza a mezclar citas de distintos participantes<br>• Las respuestas se vuelven más genéricas y menos específicas<br>• Claude "olvida" reglas que estaban en el CLAUDE.md<br>• Las respuestas se repiten o hacen referencia a puntos anteriores de forma incorrecta</p></div></div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>🗜️ Solución 1: /compact</h4>
+        <p>El comando <code>/compact</code> comprime el historial de la sesión actual manteniendo los puntos clave. Úsalo cada 30-40 minutos en sesiones largas.</p>
+        <div class="term" style="margin-top:10px"><div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div></div><pre><span class="bold">&gt;</span> /compact</pre></div>
+      </div>
+      <div class="card">
+        <h4>✂️ Solución 2: dividir sesiones</h4>
+        <p>Para proyectos grandes, divide el análisis en sesiones cortas con propósito específico. Guarda el output de cada sesión en un archivo antes de cerrar.</p>
+        <p style="margin-top:8px;font-size:12.5px;color:var(--muted)">Sesión 1: análisis individual P01-P03<br>Sesión 2: análisis individual P06-P08<br>Sesión 3: síntesis cross-participantes</p>
+      </div>
+      <div class="card">
+        <h4>🤖 Solución 3: subagentes</h4>
+        <p>Cada subagente del /opportunity-finder tiene su propio contexto limpio. Para proyectos con muchos archivos, los subagentes son la mejor solución contra el context rot.</p>
+      </div>
+      <div class="card">
+        <h4>📋 Solución 4: CLAUDE.md robusto</h4>
+        <p>Un CLAUDE.md bien escrito funciona como "ancla de contexto" — cuando el modelo derive, el CLAUDE.md lo recalibra en cada sesión nueva.</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-label">✏️ Ejercicio práctico · Sección 7</div>
+      <h4>Mapea el workflow ideal para tu próximo proyecto</h4>
+      <p class="ex-p">Toma un proyecto que tenga: (a) un brief del cliente, (b) 3+ entrevistas o encuestas, (c) una decisión de producto o diseño que responder. Dibuja el flujo:</p>
+      <ul>
+        <li><strong style="color:#93c5fd">Sesión 1:</strong> /data-quality-audit + /assumption-extraction en el brief</li>
+        <li><strong style="color:#93c5fd">Sesión 2:</strong> /opportunity-finder en paralelo sobre todas las entrevistas</li>
+        <li><strong style="color:#93c5fd">Sesión 3:</strong> /workflow-decisions → síntesis + evidencia</li>
+        <li><strong style="color:#93c5fd">Entregable:</strong> reporte en Delivery/ listo para el cliente</li>
+      </ul>
+      <p class="ex-p" style="margin-top:8px">Comparte este flujo con tu equipo antes de empezar — alinear el método antes es mejor que corregirlo a mitad.</p>
+      <button class="try-btn" onclick="navigator.clipboard && navigator.clipboard.writeText('/workflow-decisions\nPregunta de decisión: [escribe tu pregunta aquí]\nFuentes de datos disponibles: [lista tus archivos]\nSegmentos relevantes: [define tus segmentos]').then(()=>this.textContent='✓ Copiado')">📋 Copiar template workflow-decisions</button>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SECTION 8: PARA EL EQUIPO
+       ========================================================= -->
+  <section class="section" id="equipo">
+    <div class="section-header-row">
+      <div class="section-big-icon">👥</div>
+      <div>
+        <div class="section-label">Sección 8 — Colaboración</div>
+        <h2 class="section-title">Para el equipo</h2>
+        <p class="section-sub">GitHub para compartir proyectos, onboarding con plugins, automatización semanal, y MCPs para conectar con las herramientas del equipo.</p>
+      </div>
+    </div>
+
+    <div class="learn-box">
+      <div class="learn-box-icon">🎯</div>
+      <p><strong>Lo que vas a aprender:</strong> Cómo hacer que la metodología de Claude Code sea compartida, reproducible y escalable para las 30 personas de Victoria Lab — incluyendo las 27 sin experiencia en código.</p>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:14px">GitHub para compartir proyectos</h3>
+
+    <div class="prose">
+      <p>GitHub es donde vive el proyecto compartido. Cuando subes tu carpeta de proyecto a GitHub, <strong>el equipo entero hereda tu CLAUDE.md, tus skills, y tus reglas</strong>. No hay que re-explicar la metodología — está en los archivos.</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">Terminal — subir proyecto a GitHub</span></div>
+      <pre><span class="c"># 1. Inicializar git en tu proyecto</span>
+<span class="pr">$</span> cd ~/Documents/mi-proyecto
+<span class="pr">$</span> git init
+
+<span class="c"># 2. Agregar todos los archivos (excepto los del .gitignore)</span>
+<span class="pr">$</span> git add .
+<span class="pr">$</span> git commit -m "setup inicial del proyecto"
+
+<span class="c"># 3. Crear repositorio en GitHub y conectarlo</span>
+<span class="pr">$</span> gh repo create victoria-lab/proyecto-whoop --private
+<span class="pr">$</span> git push -u origin main
+
+<span class="ok">✓ Proyecto disponible para el equipo en GitHub</span></pre>
+    </div>
+
+    <div class="callout warn"><div class="callout-icon">⚠️</div><div class="callout-body"><strong>Siempre usa repositorios privados</strong><p>Los datos de investigación son confidenciales. Asegúrate de crear el repositorio como <strong>privado</strong> (<code>--private</code>). El .gitignore de este proyecto ya está configurado para excluir datos sensibles.</p></div></div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">Onboarding con plugins (para los no técnicos)</h3>
+
+    <div class="prose">
+      <p>Para las 27 personas del equipo sin experiencia en código, la barrera no es entender Claude — es la terminal. Dos opciones para reducir esa barrera:</p>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <h4>🖥️ VS Code + extensión Claude Code</h4>
+        <p>VS Code es un editor de texto gratuito que tiene una integración nativa con Claude Code. Permite usar Claude Code con una interfaz visual — sin memorizar comandos de terminal.</p>
+        <div class="callout tip" style="margin-top:10px"><div class="callout-icon">💡</div><div class="callout-body"><p>Busca "Claude Code" en el Marketplace de VS Code. Una vez instalado, tienes acceso a Claude Code con atajos de teclado desde cualquier archivo abierto.</p></div></div>
+      </div>
+      <div class="card">
+        <h4>⌨️ Cursor — IDE con IA integrada</h4>
+        <p>Cursor es un editor diseñado para trabajar con IA desde el inicio. Si alguien del equipo va a usar Claude Code regularmente, Cursor es la experiencia más fluida — no requiere memorizar comandos.</p>
+        <p style="margin-top:8px;font-size:12.5px;color:var(--muted)">Cursor.com — versión gratuita disponible</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">Automatización semanal</h3>
+
+    <div class="prose">
+      <p>Una vez que tienes los skills y la estructura de proyecto, puedes automatizar partes del análisis semanal. Ejemplo para un proyecto de investigación continua:</p>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">Flujo semanal automatizado (bash script)</span></div>
+      <pre><span class="c">#!/bin/bash
+# semanal.sh — ejecutar cada lunes</span>
+
+<span class="c"># 1. Actualizar proyecto desde GitHub</span>
+git pull origin main
+
+<span class="c"># 2. Ejecutar análisis de nuevas transcripciones</span>
+<span class="k">for</span> <span class="s">archivo</span> <span class="k">in</span> Data/nuevas/*.txt; <span class="k">do</span>
+  claude <span class="s">"</span>/extract-signals $archivo<span class="s">"</span>
+<span class="k">done</span>
+
+<span class="c"># 3. Síntesis semanal</span>
+claude <span class="s">"/opportunity-finder Genera un resumen semanal
+de las señales más relevantes encontradas esta semana"</span>
+
+<span class="ok">echo "✓ Análisis semanal completado"</span></pre>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">MCPs — conecta Claude con tus herramientas</h3>
+
+    <div class="prose">
+      <p>Los <strong>MCPs (Model Context Protocol)</strong> son conectores que le dan a Claude acceso directo a servicios externos. Sin MCP, Claude solo puede leer archivos locales. Con MCPs, puede leer directamente de Notion, Google Drive, o Supabase.</p>
+    </div>
+
+    <div class="mcp-grid">
+      <div class="mcp-card">
+        <div class="mi">🗃️</div>
+        <h4>Supabase MCP</h4>
+        <p>Leer y escribir en tu base de datos Supabase. Ideal para proyectos con gran volumen de respuestas.</p>
+      </div>
+      <div class="mcp-card">
+        <div class="mi">📁</div>
+        <h4>Google Drive MCP</h4>
+        <p>Acceder a documentos de Drive directamente. Sin necesidad de descargar archivos manualmente.</p>
+      </div>
+      <div class="mcp-card">
+        <div class="mi">📝</div>
+        <h4>Notion MCP</h4>
+        <p>Leer y escribir páginas de Notion. Genera entregables directamente en el workspace del equipo.</p>
+      </div>
+      <div class="mcp-card">
+        <div class="mi">💬</div>
+        <h4>Slack MCP</h4>
+        <p>Enviar notificaciones y resúmenes a canales de Slack cuando termina un análisis.</p>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">~/.claude/settings.json — configurar MCPs</span></div>
+      <pre>{
+  <span class="h">"mcpServers"</span>: {
+    <span class="h">"supabase"</span>: {
+      <span class="k">"command"</span>: <span class="s">"npx"</span>,
+      <span class="k">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"@supabase/mcp-server-supabase"</span>],
+      <span class="k">"env"</span>: {
+        <span class="k">"SUPABASE_URL"</span>: <span class="s">"[tu-url]"</span>,
+        <span class="k">"SUPABASE_KEY"</span>: <span class="s">"[tu-key]"</span>
+      }
+    },
+    <span class="h">"notion"</span>: {
+      <span class="k">"command"</span>: <span class="s">"npx"</span>,
+      <span class="k">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"@makenotion/notion-mcp-server"</span>],
+      <span class="k">"env"</span>: {
+        <span class="k">"NOTION_TOKEN"</span>: <span class="s">"[tu-token]"</span>
+      }
+    }
+  }
+}</pre>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin:24px 0 14px">Plan de onboarding para el equipo</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Semana</th>
+            <th>🔵 Perfil técnico (3-4 personas)</th>
+            <th>🟣 Perfil no técnico (26 personas)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Semana 1</td><td>Setup completo + primer proyecto real</td><td>Usar Claude Web en proyectos actuales</td></tr>
+          <tr><td>Semana 2</td><td>Crear primer skill del equipo</td><td>Revisar outputs generados por el equipo técnico</td></tr>
+          <tr><td>Semana 3</td><td>Setup GitHub + MCPs del equipo</td><td>Instalar VS Code + plugin, primer uso guiado</td></tr>
+          <tr><td>Semana 4</td><td>Primer workflow-decisions en proyecto real</td><td>Usar skills existentes en nuevos proyectos</td></tr>
+          <tr><td>Mes 2+</td><td>Crear y mejorar skills del equipo</td><td>Proponer mejoras a skills existentes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout ok"><div class="callout-icon">✅</div><div class="callout-body"><strong>El objetivo real</strong><p>No es que las 30 personas dominen Claude Code — es que las 3-4 personas técnicas construyan el sistema de skills y workflows que las otras 26 pueden usar sin saber nada de terminal. La automatización beneficia a todo el equipo; la complejidad se concentra en pocos.</p></div></div>
+
+    <div class="exercise">
+      <div class="exercise-label">✏️ Ejercicio práctico · Sección 8</div>
+      <h4>Planifica el onboarding de tu equipo esta semana</h4>
+      <p class="ex-p">Identifica tres cosas concretas que puedes hacer esta semana:</p>
+      <ul>
+        <li><strong style="color:#4ade80">Hoy:</strong> Sube la estructura de tu proyecto a GitHub (privado) y comparte el link con 1 persona</li>
+        <li><strong style="color:#4ade80">Esta semana:</strong> Ayuda a 1 persona no técnica del equipo a instalar Claude Code y hacer su primera consulta</li>
+        <li><strong style="color:#4ade80">Este mes:</strong> Crea un skill específico para el tipo de análisis más común del equipo</li>
+      </ul>
+      <p class="ex-p" style="margin-top:8px">El mejor onboarding es uno que muestra valor inmediato — no theory, sino un resultado real del primer día.</p>
+      <button class="try-btn" onclick="document.getElementById('victoria').scrollIntoView({behavior:'smooth'})">🎯 Ver casos de uso de Victoria Lab →</button>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SECTION 9: PARA VICTORIA LAB
+       ========================================================= -->
+  <section class="section" id="victoria">
+    <div class="section-header-row">
+      <div class="section-big-icon">🎯</div>
+      <div>
+        <div class="section-label">Sección 9 — Casos de uso LVL</div>
+        <h2 class="section-title">Para Victoria Lab</h2>
+        <p class="section-sub">Cómo aplicar Claude Code a los proyectos y fuentes de datos específicas del equipo.</p>
+      </div>
+    </div>
+
+    <div class="learn-box">
+      <div class="learn-box-icon">🎯</div>
+      <p><strong>Lo que vas a aprender:</strong> Tres casos de uso inmediatos para LVL: análisis de conversaciones del bot de WhatsApp, encuestas con need assessment y MaxDiff, y el flujo combinado Claude Code + Claude Web para máxima eficiencia.</p>
+    </div>
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:14px">Caso 1: Análisis de conversaciones del bot de WhatsApp</h3>
+
+    <div class="prose">
+      <p>El bot de WhatsApp genera conversaciones ricas en señales de comportamiento — pero en un formato que requiere preprocesamiento antes de que Claude Code pueda analizarlo bien. El flujo recomendado:</p>
+    </div>
+
+    <ul class="steps" style="margin-bottom:24px">
+      <li class="step">
+        <div class="step-content">
+          <h4>Exporta y limpia las conversaciones</h4>
+          <p>Exporta los chats en formato .txt. Estandariza el formato: cada mensaje en una línea con speaker y timestamp.</p>
+          <div class="code-wrap">
+            <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">Data/conversacion-cliente-001.txt</span></div>
+            <pre><span class="c"># Formato recomendado para conversaciones de WhatsApp</span>
+<span class="k">Bot:</span> <span class="s">Hola María, ¿cómo te fue con el producto esta semana?</span>
+<span class="k">María:</span> <span class="s">Bien, aunque tuve que hacer X antes de poder usarlo</span>
+<span class="k">Bot:</span> <span class="s">¿Puedes contarme más sobre ese paso X?</span>
+<span class="k">María:</span> <span class="s">Sí, es que cuando llegué a la tienda no había...</span></pre>
+          </div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-content">
+          <h4>Define tus señales de interés en CLAUDE.md</h4>
+          <p>Especifica qué estás buscando en las conversaciones. Sin esto, el análisis será genérico.</p>
+          <div class="code-wrap">
+            <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">CLAUDE.md — sección de señales</span></div>
+            <pre><span class="h">## Señales de interés en conversaciones bot</span>
+- <span class="s">Workarounds:</span> pasos adicionales que el cliente inventa para usar el producto
+- <span class="s">Abandono silencioso:</span> temas que se mencionan una vez y no se retoman
+- <span class="s">Lenguaje de esfuerzo:</span> "tuve que", "me tocó", "me costó", "intenté"
+- <span class="s">Comparaciones:</span> cuando el cliente menciona otra marca o alternativa
+- <span class="s">Momentos de delight:</span> exclamaciones, emojis positivos, lenguaje de sorpresa</pre>
+          </div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-content">
+          <h4>Corre el análisis con subagentes paralelos</h4>
+          <p>Si tienes 20+ conversaciones, usa /opportunity-finder para analizarlas todas a la vez.</p>
+          <div class="term">
+            <div class="term-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="term-title">Claude Code</span></div>
+            <pre><span class="bold">&gt;</span> /opportunity-finder
+  Analiza todas las conversaciones en Data/whatsapp/ en paralelo.
+  Pregunta: ¿Cuáles son los principales puntos de fricción
+  y momentos de abandono en la experiencia del cliente?
+
+<span class="ok">✓ 20 subagentes completados. Output: Analysis/whatsapp-synthesis.md</span></pre>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <div class="callout tip"><div class="callout-icon">💡</div><div class="callout-body"><strong>Señal única de WhatsApp: el lenguaje informal</strong><p>Las conversaciones de WhatsApp tienen un nivel de autenticidad que las encuestas no pueden replicar. El cliente dice "eso no jalaba" en lugar de "el producto no funcionaba" — ese lenguaje coloquial es una señal más honesta. Instrucción para Claude: <em>"Presta atención al vocabulario coloquial y a las expresiones informales — a menudo revelan la experiencia real mejor que el lenguaje formal."</em></p></div></div>
+
+    <hr class="divider">
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:14px">Caso 2: Encuestas con Need Assessment y MaxDiff</h3>
+
+    <div class="prose">
+      <p>Las encuestas de Need Assessment y MaxDiff generan datos cuantitativos — pero los errores más comunes (aplanamiento de segmentos, señal no accionable) son exactamente los que Claude Code puede prevenir.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>📊 Need Assessment con Claude Code</h4>
+        <ul>
+          <li>Exporta los resultados como CSV (separador ;)</li>
+          <li>Corre <code>/data-quality-audit</code> antes de analizar</li>
+          <li>Instrucción clave: <em>"Segmenta los resultados por [variable demográfica o comportamental relevante] antes de agregar. No me des el promedio total."</em></li>
+          <li>Usa <code>/cross-source-triangulation</code> para comparar con entrevistas cualitativas del mismo proyecto</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>🔢 MaxDiff con Claude Code</h4>
+        <ul>
+          <li>Los datos MaxDiff tienen formato específico — incluye un ejemplo del formato en tu CLAUDE.md</li>
+          <li>Instrucción clave: <em>"No interpretes los scores MaxDiff como porcentajes de preferencia directa. Son scores relativos — compáralos entre segmentos."</em></li>
+          <li>Crea un skill específico para tu formato de exportación de MaxDiff — así cualquier encuesta futura se analiza igual</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-head"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="fname">Claude Code — análisis de encuesta Need Assessment</span></div>
+      <pre><span class="bold">&gt;</span> Lee Data/need-assessment-q1-2025.csv.
+  Primero corre /data-quality-audit para verificar la calidad.
+  Luego analiza los resultados segmentado por la columna "region".
+  Para cada región: top 3 necesidades, bottom 3, y qué necesidades
+  divergen más entre regiones (esas son las más interesantes).
+  Output en Analysis/need-assessment-por-region.md
+
+<span class="inf">Auditando CSV...
+✓ 320 filas, 15 columnas, sin valores nulos.
+Regiones encontradas: Lima (142), Provincias (118), Extranjero (60)
+
+Analizando por región...</span>
+
+<span class="out">Divergencia más significativa: "Precio accesible" es #1 en
+Provincias pero #7 en Lima. "Disponibilidad inmediata" es #1
+en Lima pero no aparece en top 5 de Provincias.
+Esto sugiere que una estrategia nacional única no servirá.</span></pre>
+    </div>
+
+    <hr class="divider">
+
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:14px">Caso 3: Claude Code + Claude Web juntos — el flujo ideal de LVL</h3>
+
+    <div class="prose">
+      <p>No tienes que elegir entre uno u otro. El flujo más eficiente usa cada herramienta donde es más fuerte:</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Momento del proyecto</th>
+            <th>🌐 Claude Web (claude.ai)</th>
+            <th>💻 Claude Code (terminal)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Kick-off con el cliente</td><td>Redactar preguntas de investigación, refinar el brief, generar hipótesis iniciales</td><td>—</td></tr>
+          <tr><td>Diseño de encuesta</td><td>Generar opciones para preguntas MaxDiff, revisar el cuestionario, sugerir mejoras</td><td>—</td></tr>
+          <tr><td>Procesamiento de datos</td><td>—</td><td>Auditar el CSV, limpiar, analizar por segmentos, extraer señales</td></tr>
+          <tr><td>Análisis de entrevistas</td><td>Analizar 1-2 entrevistas rápidas para exploración inicial</td><td>Analizar todas las entrevistas en paralelo con subagentes, síntesis cross-fuentes</td></tr>
+          <tr><td>Síntesis de hallazgos</td><td>—</td><td>/workflow-decisions, /cross-source-triangulation, /assumption-validation</td></tr>
+          <tr><td>Entregable para cliente</td><td>Pulir el lenguaje del reporte, adaptar el tono, revisar la narrativa</td><td>Generar el borrador inicial en markdown con citas verificadas</td></tr>
+          <tr><td>Preguntas de seguimiento</td><td>Consultas rápidas, exploración de ideas, feedback del cliente</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout ok"><div class="callout-icon">✅</div><div class="callout-body"><strong>Regla práctica</strong><p>Si puedes pegarlo en un chat → Claude Web. Si tienes archivos que procesar o necesitas consistencia entre proyectos → Claude Code. El 70% del tiempo de investigación profunda estará en Claude Code; el 30% de planificación y comunicación estará en Claude Web.</p></div></div>
+
+    <div class="exercise">
+      <div class="exercise-label">✏️ Ejercicio práctico · Sección 9</div>
+      <h4>Aplica Claude Code a un proyecto LVL real esta semana</h4>
+      <p class="ex-p">Elige un proyecto en curso o recién cerrado. Define:</p>
+      <ul>
+        <li><strong style="color:#4ade80">¿Qué fuente de datos tienes?</strong> (bot WhatsApp / encuesta / entrevistas / mezcla)</li>
+        <li><strong style="color:#4ade80">¿Cuál es la pregunta de decisión del cliente?</strong> (qué tiene que decidir basándose en tu análisis)</li>
+        <li><strong style="color:#4ade80">¿Qué segmentos son relevantes?</strong> (por región, perfil de cliente, canal, etc.)</li>
+      </ul>
+      <p class="ex-p" style="margin-top:8px">Con esas tres respuestas, escribe tu CLAUDE.md del proyecto. Es el primer paso y el más importante.</p>
+      <button class="try-btn" onclick="navigator.clipboard && navigator.clipboard.writeText('# Proyecto: [nombre]\n\n## Pregunta central de decisión\n[¿Qué tiene que decidir el cliente basándose en este análisis?]\n\n## Fuentes de datos\n- [lista tus archivos]\n\n## Segmentos relevantes\n- [lista los segmentos que importan]\n\n## Reglas de análisis\n1. Toda afirmación requiere cita textual o número específico\n2. Reportar hallazgos por segmento, no solo en total\n3. Distinguir entre lo que el participante dice y lo que hace\n\n## Formato de output\n- Análisis: Analysis/YYYY-MM-DD-[tipo].md\n- Entregable final: Delivery/reporte-[cliente].md').then(()=>this.textContent='✓ Template copiado')">📋 Copiar template CLAUDE.md LVL</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p style="color:rgba(255,255,255,.6);font-size:13px;margin-bottom:8px">🤖 <strong style="color:rgba(255,255,255,.8)">Claude Code — Guía Victoria Lab</strong></p>
+    <p>Construida con datos reales del proyecto Whoop Screen Exploration Q4 2025 (usado como caso de práctica) · Actualizada abril 2025</p>
+    <p style="margin-top:8px">Para preguntas o sugerencias, abre un issue en el repositorio del equipo.</p>
+  </footer>
+
+</main><!-- /main -->
+
+<script>
+// ── SIDEBAR MOBILE ──────────────────────────────────────────
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── ACTIVE NAV ON SCROLL ─────────────────────────────────────
+const sections = document.querySelectorAll('.section[id]');
+const navItems = document.querySelectorAll('.nav-item[href^="#"]');
+
+function updateActiveNav() {
+  let current = '';
+  sections.forEach(s => {
+    const top = s.getBoundingClientRect().top;
+    if (top <= 120) current = s.id;
+  });
+  navItems.forEach(item => {
+    const href = item.getAttribute('href').slice(1);
+    item.classList.toggle('active', href === current);
+  });
+}
+
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+updateActiveNav();
+
+// ── COLLAPSIBLE ERROR CARDS ───────────────────────────────────
+function toggleErr(header) {
+  const body = header.nextElementSibling;
+  const chev = header.querySelector('.err-chev');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
+// Open first error card by default
+document.addEventListener('DOMContentLoaded', () => {
+  const firstHead = document.querySelector('.err-head');
+  if (firstHead) toggleErr(firstHead);
+});
+
+// ── INTERACTIVE CHECKLIST ─────────────────────────────────────
+const STORAGE_KEY = 'vl_checklist';
+
+function loadChecklist() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function saveChecklist(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function updateProgress() {
+  const items = document.querySelectorAll('#checklist-list .ci');
+  const done = document.querySelectorAll('#checklist-list .ci.done').length;
+  const total = items.length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  const bar = document.getElementById('pbar');
+  const label = document.getElementById('plabel');
+  if (bar) bar.style.width = pct + '%';
+  if (label) label.textContent = done + ' / ' + total + ' completadas';
+}
+
+function toggleCheck(el) {
+  const state = loadChecklist();
+  const idx = Array.from(document.querySelectorAll('#checklist-list .ci')).indexOf(el);
+  const key = 'item_' + idx;
+  if (state[key]) {
+    delete state[key];
+    el.classList.remove('done');
+  } else {
+    state[key] = true;
+    el.classList.add('done');
+  }
+  saveChecklist(state);
+  updateProgress();
+}
+
+// Restore checklist state on load
+document.addEventListener('DOMContentLoaded', () => {
+  const state = loadChecklist();
+  const items = document.querySelectorAll('#checklist-list .ci');
+  items.forEach((item, idx) => {
+    if (state['item_' + idx]) item.classList.add('done');
+  });
+  updateProgress();
+});
+</script>
+</body>
+</html>
